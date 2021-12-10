@@ -1,0 +1,71 @@
+\input{tables/AttributesFeatures}
+\section{Detect and Diagnose Abnormal Flight Patterns:} 
+The aim of these activities is to train and evaluate a time-series predictive analytics solution for automatically detecting, labeling, and classifying flight anomolies. These activities are largely dependent upon infrastructure-building tasks T1; however, we have started work on Tasks T2.1a and T2.2a as discussed below.
+
+\begin{itemize}[leftmargin=0em]
+
+\item[] 
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.1:}
+Create flight anomaly taxonomy\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\sethlcolor{ylw}
+\large a.~\hl{Create an initial taxonomy of common sUAS anomalies}&05/21&10/21&Completed\\
+\large b.~{Extend the taxonomy with additional anomaly patterns}&&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.2:}
+Train and test predictive analytics and anomoly classifier\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\sethlcolor{ylw}
+\large a.~\hl{Proof-of-concept using LSTM with Ardupilot \& px4 logs}&05/21&10/21&Active\\
+\large b.~Train \& evaluate MSCRED using simulated data&&&Planned\\
+\large c.~Train \& evaluate MSCRED on physical data&&&Planned\\
+\large d.~Minimize the model for on-board deployment&&&Planned\\
+\large e.~Train classifier to generate human-understandable tags &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+\end{itemize}
+
+\input{figures/ICCPSResult}
+\input{tables/ICCPS-MetricResults}
+Specific activities related to anomaly detection and diagnostics performed during this period have focused on the following:
+\begin{itemize}
+    \item {\bf Taxonomy of known sUAS Anomalies: {\it [Task 2.1a]} } We reopened this task in order to extend the taxonomy to include specific attributes for anomaly types. Documenting these attributes was necessary for building anomaly detectors. Results are shown in Table \ref{tab:Indicators}.
+    \item {\bf Detecting anomalies using Autoencoders: {\it [Task 2.2a]} }
+    We extended our previous experiments to build autoencoders (using LSTM and ANN) for three types of failures -- namely Vibration, Attitude, and Compass Interference, and conducted controlled experiments to evaluate effectiveness.   We also compared a heuristic approach for Attitude; however, this underperformed. The Compass interference was an entirely new, more complex time-series, as it included the interplay of two different attributes.
+    
+
+    Time-series plots showing detected anomalies for all three anomaly types are shown in \ref{fig:res2}. Experimental results from our experiments are reported in Table \ref{tab:eval}. These results are only intended as a baseline. We discuss shortcomings and next steps in the future work section. Our findings showed that ANN worked *almost* as well as LSTM and was lighter-weight and faster for the two simpler failure types -- Vibration and Attitude; however, Compass Interference, which was detected based on the interplay between throttle and MAG, performed better with LSTM. Overall results were very promising for an initial baseline.
+    
+    Our paper was submitted to the A* ranked International Conference on Software Processing and Networks. 
+   
+\end{itemize}
+\subsection*{Next Steps: }
+Next steps will focus on two aspects of the project.
+
+\begin{itemize}
+    \item {\bf Multivariate Analysis:}
+While our work established a good baseline and served as a proof-of-concept that it is possible to detect emergent anomalous behavior, it has several shortcomings that we plan to address.  First, we trained individual autoencoders for each anomaly type; however, in reality, individual attributes serve as indicators across multiple types of failures. We therefore plan to look at multi-variate approaches that are capable of analysing multiple `symptoms' simultaneously and diagnosing diverse failures. This next step is a multi-month effort as it requires significant effort to build a far more extensive labeled dataset and also conduct extensive experiments. This part of the work will be primarily supervised by Dr. Chawla, with PhD students Yihong and Doheon (new student). The data collection will be a full-team effort.
+
+\item {\bf Realtime Analysis:} Current experiments were all conducted on stored flight logs. However, in the next phase we will focus on real-time analysis. We want to tackle this early so that we fully understand performance and timing constraints.  In the next period we will start integrating anomaly detection on our autopilot flight logs (PX4, Ardupilot). We plan to get this working within a MAPE-K loop (Monitor-Analyze-Plan-Execute over a shared Knowledge) hosted onboard our autopilot. We plan to establish a test environment that includes (1) injecting flight errors into the simulator, (2) detecting errors, and (3) taking basic remedial actions.  Flight errors will be created in two ways -- first, using settings in the simulator which are designed to test for failure cases, and second, by forcing harmful configurations during flight (i.e, Myra's ISU team outputs).  We have an aggressive plan to submit a paper to SEAMS: Software Engineering for Adaptive and Self-Managing Systems Symposium with a January 20th submission deadline. SEAMS is a highly-focused, well-respected event with high relevance for our work.  As a contingency plan; if we are not able to complete experiments in time, we will target the March 10th deadline of the ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering (A* conference).  The onboard infrastructure will be created by Nafee (ND), and the overall project will be a collaborative effort between Cleland-Huang/ND team and Cohen/ISU team.
+\end{itemize}
+
+ 
+
+

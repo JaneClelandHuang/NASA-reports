@@ -1,0 +1,68 @@
+\section{Fault detection and Feature Interactions in sUAS:} The aim of these tasks is to identify runaway emergent behaviors due to interactions between hardware, software and environmental conditions using feature-based modeling and testing and search-based exploration using simulation.  
+
+\begin{itemize}[leftmargin=0em]
+\item[] 
+\begin{itemize}[leftmargin=*]
+% First subtask
+\item \textbf{Task 3.1:}~{Build and refine relational models of the sUAS configuration space.}
+\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ 
+\sethlcolor{ylw}
+\large a.~\hl{Build initial feature models} &06/21&10/21&Completed\\
+\large b.~\hl{Refine feature models} &10/22&01/21&Active\\
+\large c.~\hl{Create feature-based simulation environment} &08/21&12/21&Active\\
+\large d.~\hl{Create structured database for analysis of logs}  &10/21&12/21& Active\\
+\large d.~Semantic partitioning of feature space  &&&Planned\\
+\end{tabular}
+\end{table}\vspace{-8pt}
+% Second subtask
+\item \textbf{Task 3.2:}~Systematically search for interaction Faults using  generated feature models. \vspace{-8pt}%Characterize features leading to failures as classification trees and utilize evolutionary algorithms for deeper search.  Experiments will be run in simulators on our HCC clusters. %Deliverables include the CIT samples, simulation scripts, evolutionary algorithms, experimental data and tagged artifacts of search. 
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\normalsize
+\large a.~CIT integrated and initial experiments run  &&&Planned\\
+\large b.~Develop alternative CIT models \& use higher strength CIT  &&&Planned\\
+\large c.~Evolutionary algorithms and integration with Goal 2 &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}%\vspace{-4pt}
+\end{itemize}
+\end{itemize}\vspace{-16pt}
+
+
+Specific activities and progress related to these tasks are:
+\begin{enumerate}
+\item Myra visited Jane and her team at Notre Dame October 13-14th. During that visit she met with all of the Notre Dame team and learned more about their infrastructure/architecture.  They discussed upcoming papers and plans to coordinate on the research directions for this grant.
+
+\item Salil has now downloaded 53k+ logs and re-analyzed the data to start refining our feature models. As part of a visit PI Cohen made to Notre Dame this month, we realized there are some new considerations when building these models.  First, we realize that there may be multiple \textit{default values} (based on the type of vehicle). This was confirmed by Salil's new analysis. We observed in the new data that there are a small number of values for various parameters that are repeated and the variation of these values are small. This provides us with a set of equivalence classes of defaults.  We are currently mining this information and documenting it to help us design a more realistic feature model. 
+
+Second, given the rich data in this set, we realized we need to create a better way to efficiently work with the data. Right now the online database at px4.io is often offline and we don't have a structured way to work with the information. In addition, there is metadata that does not get extracted using their default tools. However, this metadata is important for the Notre Dame team since it has an optional description and rating of the mission. Both of these fields can help us with labelling in the future.  Alex (our undergrad) has modified the download script and we can now extract this data. There are also multiple time series tables that can be extracted from the logs (as .csv files), however none of this data is connected back to the rest of the information. Hence, we realized we need to build a local queryable structured database that will allow us (and the Notre Dame team) to analyze the data more efficiently. 
+
+\item Urjoshi has designed an SQLite database to hold this data with the unique log id as the main primary key (see Figure \ref{fig:dbschema}(a)). The leftmost table is the main data in the PX4 logs. \#1 shows the configuration table. \#2 is an example of tine series data for a log and \#3 is the metadata.  Figure \ref{fig:dbschema}(b) shows some of the metadata from logs we have downloaded. The first log has a description as well as a rating, while the other logs only have a rating. 
+
+
+We are also storing the actual (original) log file \#4 to allow us to go back to specific logs if needed. She has started to populate this with the downloaded data. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=6.5in]{figures/database-figurepptx.pdf}
+\caption{PX4 Database Schema} \label{fig:dbschema}
+\end{figure}
+
+
+\item We now have the initial infrastructure to run our experiments locally at Iowa State. This infrastructure will be the basis for the genetic algorithm/configuration exploration. After PI Cohen's visit to Notre Dane we were able to build a simple docker container that all of us can use to run headless simulations on JMavsim (one of PX4's simulators). We are using the Notre Dame team's \textit{hardware test infrastructure}, which uses a MAVros communication environment and tests written in python.  This will allow us to be compatible with the Notre Dame team so we can eventually use their more advanced software infrastructure, but it also removes some of the complexity of running and building new test (missions).  
+\end{enumerate}
+\subsection*{Next Steps:}
+\begin{enumerate}
+\item Alex has extracted initial data for Urjoshi to use in the database, but we need to build some pre-processing scripts to clean the data and get it into the necessary format for uploading. Urjoshi is also building automated upload scripts. 
+
+\item Urjoshi and Salil are now working to script the process for running individual (configuration-specific) missions. We have an initial script that works. It starts PX4 under a specific configuration, runs the test(s) and exits. The PX4 log is written so we can automate reading this and using it for our fitness. We are now working to incorporate the fitness and building an architecture to accept the configuration parameters for setup.   PI Cohen met with our IT high performance computing team to discuss how we can port this to our servers. 
+\item We need to design an initial fitness function that we can extract from the logs. This is still an open item.
+\item Once we have all of this infrastructure we plan to start (a) mining the database to improve the feature model and (2) start incorporating this into the genetic algorithm framework.
+\end{enumerate}

@@ -1,0 +1,70 @@
+\begin{figure}[t!]
+\centering
+{\centering\includegraphics[width=1.0\columnwidth]{figures/px4-failures.PNG}}
+\caption{Strange behavior was observed on an sUAS on px4 using a Taranis X9D+ with FrSky X8R receiver and 433 MHz telemetry link resulting in a crash (See 1). Identical patterns were observed by two other pilots using the same hardware configuration (See 2 and 3) suggesting an emergent pattern (See original report \cite{px4-pattern})}
+\label{fig:pattern}
+\vspace{-12pt}
+\end{figure}
+
+\section{Goal 2:  Detecting and Interpreting Anomolous Flight Patterns}
+\label{sec:patterns}
+\vspace{-8pt}
+\noindent{\it sUAS flight data represents heterogeneous, multivariate, potentially noisy time-series. We present a highly-novel solution that will effectively integrate extremely heterogeneous data, discover anomalous patterns, provide intepretability through diagnosis and severity scores, and generate appropriate alerts to the NAS and the remote pilot (Lead co-I: Chawla). }
+
+We motivate our work with the real-life example shown in Figure \ref{fig:pattern}, which reports abnormal behavior of an sUAS flying on px4 using a Taranis X9D+ with FrSky X8R receiver and 433 MHz telemetry link resulting in a crash. The flight log indicated rapid fluctuations of signal on multiple channels and rapid mode switches. Of particular note, an identical pattern was reported by two other pilots flying in different areas using the same hardware configuration. This  suggests an emergent pattern leading to out of control behavior.
+
+Anomaly  detection  and diagnosis in multivariate time series (Figure~\ref{fig:timeseries}) requires identification of abnormal status in certain time steps and  pinpointing the root causes. This in turn, requires  the capture of temporal  dependencies  within  each time  series, and encoding  of inter-correlations  between  different  pairs  of time series. As such, a time-series predictor must be trained on aggregate data sets. In addition, the system must be robust to noise and provide operators with different levels of anomaly scores based upon the severity of different incidents. Although many unsupervised anomaly detection algorithms~\cite{ide2007computing, brockwell1991time, malhotra2016lstm, zhou2017anomaly, zhai2016deep, zong2018deep} exist, few are able to address all of these challenges as we propose to do.
+
+\subsection{Time-Series Pattern Recognition and Anomaly Detection}
+
+Monitoring the behaviors of multiple sUAS generates a substantial amount of multivariate time series data. A critical task in managing these systems is to detect anomalies in a timely fashion so  that operators, or the system itself, can  take  remedial  actions  to  resolve the underlying  issues. As an initial solution, an anomaly score can be produced and used as an indicator of sUAS failure. In addition, pinpointing root causes, for example, identifying which data is causing an  anomaly,  can  help  the  remote pilot or the system to take timely remedial actions. Similarly, identifying contextual information, such as proximity to protected airspace or to other aircraft, can raise or lower the urgency of issuing a warning (e.g., through a SWIM service). Short term anomalies, caused by temporal turbulence or a system status switch, may be remediated by an auto-recovery capability built into the sUAS, and therefore may not result in a true system failure. Therefore we will generate different levels of anomaly scores based upon the predicted severity and broader impact. 
+
+\begin{wrapfigure}[11]{r}{0.50\textwidth} 
+\vspace{-22pt}
+\centering
+\includegraphics[width=.50\columnwidth,trim={1cm .5cm 2cm 1cm},clip]{figures/nasaTimeSeries.png}
+\caption{Unsupervised anomaly detection and diagnosis in multivariate time series data.}
+\label{fig:timeseries}
+\end{wrapfigure} 
+As anomaly labels are not available in the historical data, the use of supervised algorithms is currently infeasible~\cite{gornitz2013toward}. However, many unsupervised time series methods fail to adequately capture temporal dependencies, are not tolerant to noise, and do not provide interpretibility to allow either a human or system to understand the severity of anomalies. To successfully identify emergent risks we will address these challenges through  developing an unsupervised learning method that constructs multi-scale (resolution) signature matrices to characterize multiple levels of the system statuses across different time steps. In particular, different levels of the system statuses will be used to indicate the severity of different abnormal incidents.  
+
+\noindent {\bf Dronolytics Method:~}
+Given the historical data of $n$ time series with length $T, i.e.,X= (x_{1} \ldots\ x_{n})^{T} \in \mathbb{R}^{ n \times T}$, and assuming that there exists no anomaly in the data, we aim at two goals: \textit{1) Anomaly detection}: detecting anomaly events at certain time steps after $T$.  
+2) \textit{Anomaly diagnosis}: given the detection results,  identifying the abnormal time  series  that  are  most  likely  to  cause  each  anomaly  and  interpreting  the anomaly severity (duration scale) qualitatively. In our prior work, we developed a Multi-Scale Convolutional Recurrent Encoder-Decoder (MSCRED)~\cite{zhang2019deep}. This includes a convolutional encoder to encode the inter-sensor (time series) correlation patterns (spatial patterns) and an attention based Convolutional Long-Short Term Memory (ConvLSTM) network to capture the temporal patterns.  Finally, with the feature maps which encode the inter-sensor correlations and temporal information, a convolutional decoder is used to reconstruct the signature matrices while the residual signature matrices are further utilized to detect and diagnose anomalies.  %The intuition is that MSCRED may not reconstruct the signature matrices well if it never observes similar system statuses before.  
+
+MSCRED provides a foundation for addressing the challenges of heterogeneous sUAS data streams, involving dynamic and non-linear time-ordered dependencies across time steps. Moreover, MSCRED addresses the data imbalance problem caused by the proportion of potential anomalies being much lower than non-anomalies. We will develop a multi-modal transformer network to jointly preserve the inter-sensor / modality correlations and intra-sensor / modality dependencies. This transformer network will aggregate contextual signals with the representation transformation process from both the modality and time dimensions. 
+We will incorporate a  multi-head attention mechanism to automatically learn the quantitative relevance across different regions (i.e., $r_{i,j}$, $i,j\in [1,...,C]$) and occurrence time $t$ (i.e., $t\in [1,...,T]$). This will allow the exploration of feature modeling in different representation spaces from spatial-temporal views~\cite{zhang2018gaan}. These representation spaces can be learned off-line in an unsupervised manner and thus do not have a cost post-deployment. The models learned on these representations (whether unsupervised or supervised based on expert annotations) will be deployed, as part of Dronolytics, both for on-board and off-board analysis. 
+We propose to prune the model space to create light-weight models so that analysis can be performed quickly based on key indicators.  
+
+\noindent {\bf On-board vs. Off-board analysis:~} As previously mentioned, we will initially train the Dronolytics models off-board using large numbers of flight logs and both simulated and physical flight data. However, the trained model will be used to support a close to real-time, low-power consumption, on-board monitoring and anomaly detection system, with off-board capabilities to continually learn about new and emergent trends. While the on-board models will flag anomalies in a real-time basis, the data will also be sent for off-line processing and analysis to identify potential false negatives / positives. This will allow for continual improvement.   %For example, it might detect that many sUAS in an area are experiencing signal loss and immediately direct them to land or RTL (return to launch), or it might detect over a period of several months that systems using a new sensor are experiencing periodic altitude fluctuations. 
+We recognize that it will be an arduous task for an expert to manually annotate data for anomalies, and so we will leverage few-shot learning to learn a model with a very small amount of training data. %This can alleviate the burden of manually annotating many instances.  
+We will benchmark the model  against large quantities of simulated data and physical flight logs. We anticipate the experimentation process involving multiple iterations of train, validate, test (where the test data is previously unseen data used to evaluate the final algorithms).
+
+
+\subsection{Interpreting Frequently Observed Anomaly Patterns}
+Using tags provided by researchers and pilots during crowd-sourcing data collection, we will evaluate several different classifiers for automating the labeling of specific anomalies.  These labels may help in describing previously ``unknown'' events that are the result of a confluence of multiple factors. For example, if an sUAS were flown over rippling water on a sunny day using a downward-facing camera for altitude hold, then the combination of variables (i.e., vicinity to water, downward facing camera, and altitude jumps) would be an indicator of the more complex event {\it inability to hold altitude due to lighting conditions and ripples on the water} and could trigger a system correction to increase altitude and/or a warning to the pilot. 
+
+%\subsection{Experiments: } We will train and evaluate the proposed models using both physical sUAS data and simulated data. We will initially train the model  to recognize common (normal) patterns of operation, and will then evaluate whether it is able to identify abnormal patterns from flight logs associated with flight incidents. We will evaluate the accuracy of the algorithms against both physical and simulated flight data. We will benchmark the model  against large quantities of simulated data from normal flights to determine if the false positive rate is similar for simulated and physical data. We anticipate the experimentation process involving multiple iterations of train, validate, test (where the test data is previously unseen data used to evaluate the final algorithms). 
+
+\subsection{Limitations and Risks}
+\noindent\textbf{Sources of Error and Uncertainties.}
+The time series and anomaly detection models will be built on the time series captured from the hardware, software, and environmental conditions. While simulated data will serve at least initially as a proxy for real-world data, it will be important to inject scenarios of noisy data into the simulated data  in order to accurately identify anomalies that are not just noise. We will consider both univariate (singular sources) and multivariate (multiple sources) sources of uncertainties in the simulations, including the elevated effect stemming from interactions among multiple features. %We will robustly capture and quantify the sources of error and uncertainties so that anomalies are not mistaken for simple noise. 
+
+
+%\jch{Nitesh -- this is just my mind-dump, please clean it up and add yor own ideas!}
+
+\noindent\textbf{The Resilience of the Approach and Methodology.} 
+The proposed signature matrix representation not only
+captures the shape similarities and value scale correlations between two time series, but is robust to input noise as the perturbation at certain time series has little impact on the signature matrices. To study the robustness of the proposed method for anomaly detection, we will conduct experiments in a variety of synthetic datasets by adding various noise factors. Since the synthetic data will be generated with noise perturbations as well as true anomalous events, we will be able to study and optimize both the specificity and sensitivity of anomaly prediction models. In addition, we will develop a feedback loop stemming from the human annotation / interpretation of anomalies to reduce both the false negative and false positive rate of anomalies, based on real-world data. %Finally we will continually evaluate results obtained using synthetic data against the expanding dataset acquired from physical sUAS flights.
+
+
+\noindent\textbf{Special capabilities and advantages of facilities and equipment.} We have access to significant high performance computing resources to generate the simulations necessary for robustly evaluating this work. In addition, Co-I Chawla is the inaugural director of the  Lucy Family Institute for Data and Society which has a mission to enable data infrastructure for research initiatives.  %Co-I Chawla has published a significant body of work in multi-variate time series modeling including a 2019 AAII publication with 58 citations. %as well as anomaly detection in time series and sequential data. This work is already generating a number of citations (for e.g., his 2019 AAAI publication has already garnered 58 citations). 
+
+
+%\subsection{Some ideas for this section}
+%\begin{enumerate}
+%    \item Establish a baseline of normal behavior
+%    \item Detect abnormal behavior and specific patterns
+%    \item (Note:) I think this section comes before fault detection section and the specific failure scenarios as it creates a kind of baseline for both of them.  \jch{For Myra's section, these abnormal patterns create the objective function in the feature interaction experiments.}
+%    \item We will have a small (hopefully growing) set of field data cases which we can use to test the pattern mining i.e., when we have data collected from known incidents, is the abnormal behavior detector able to detect it and with \emph{how much warning}.  Can we replicate in the simulator?  If so -- can we force remediations??
+%\end{enumerate}

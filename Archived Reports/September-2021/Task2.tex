@@ -1,0 +1,104 @@
+\section{Detect and Diagnose Abnormal Flight Patterns:} 
+The aim of these activities is to train and evaluate a time-series predictive analytics solution for automatically detecting, labeling, and classifying flight anomolies. These activities are largely dependent upon infrastructure-building tasks T1; however, we have started work on Tasks T2.1a and T2.2a as discussed below.
+
+\begin{itemize}[leftmargin=0em]
+
+\item[] 
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.1:}
+Create flight anomaly taxonomy\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\sethlcolor{ylw}
+\large a.~\hl{Create a taxonomy of known sUAS anomalies}&05/21&10/21&Active\\
+\large b.~{Extend the taxonomy with additional anomaly patterns}&&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.2:}
+Train and test predictive analytics and anomoly classifier\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\large a.~\hl{Proof-of-concept using LSTM with Ardupilot \& px4 logs}&05/21&10/21&Active\\
+\large b.~Train \& evaluate MSCRED using simulated data&&&Planned\\
+\large c.~Train \& evaluate MSCRED on physical data&&&Planned\\
+\large d.~Minimize the model for on-board deployment&&&Planned\\
+\large e.~Train classifier to generate human-understandable tags &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+\end{itemize}
+
+\newpage Specific activities related to anomaly detection and diagnostics performed during this period have focused on the following:
+\begin{itemize}
+    \item {\bf Taxonomy of known sUAS Anomalies: {\it [Task 2.1a]} } Previously, PhD student Md Nafee Al Islam performed a systematic study of Ardupilot and px4 discussion forums and has identified commonly recurring anomalies of: mechanical errors, high vibration, compass interference, gps glitches, power issues, and loss of link. We have started a paper to submit to the International Conference on CPS with these findings and early results of detecting anomalies during flight.
+    \item {\bf Optimizing the LSTM model: {\it [Task 2.2a]} }
+    Nafee has optimized the previous model by training it with a larger dataset collected from our own UAV flight logs. The optimized model outperformed the previously reported proof of concept one. On the same test set of 25 logs, the optimized model detected all the anomalous ones. It was able to correctly classify 13 out of 15 normal flight logs (\textit{True Negatives}) while only misclassifying 2 of the normal logs as anomalous (\textit{False Positives}). Figure \ref{fig:eval} shows some of the detection results of the optimized model. Figure \ref{fig:tp} shows an instance where the model detected anomalies (marked with a red dot) in an anomalous vibration log. Figure \ref{fig:tn} shows another example where the log has no anomalies in vibration and the model correctly accepted it as normal. Figure \ref{fig:fp} shows an example of a false positive detection where the vibration was in normal range but the model still detected many parts of it as anomalous. We plan to further improve our model to remove these false positive results. The overall results of both the models are summarized in table \ref{tab:eval}.  Nafee and Jonathan (who recently joined the project) are now working together to train and evaluate models for each of the six targeted anomaly types.
+\end{itemize}
+
+\begin{figure}
+     \centering
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=5.5cm, height=5.5cm]{figures/ADPD-013_old_.jpg}
+         \caption{Detected anomalies in a log where anomalies truly exist (\textit{True Positive}) }
+         \label{fig:tp}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=5.5cm, height=5.5cm]{figures/ADPD-021_.jpg}
+         \caption{An example of the model not detecting any problem in a normal log file (\textit{True Negative})}
+         \label{fig:tn}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=5.5cm, height=5.5cm]{figures/ADPD-022_.jpg}
+         \caption{An example when the model detected anomalies but there were none (\textit{False Positive})}
+         \label{fig:fp}
+     \end{subfigure}
+     \caption{Performance of the optimized model on some of the test set logs}
+     \label{fig:eval}
+\end{figure}
+
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|p{8 cm}|p {3 cm}|p{2 cm}|}
+        \hline
+
+        \hline
+        \multirow{5}{*}{Proof-of-concept LSTM model} & \textbf{Total Test Logs}  & 25 \\\cline{2-3}                        & True Positives & 8 \\\cline{2-3}
+                                          & True Negatives & 12  \\\cline{2-3}
+                                          & False Positives & 3 \\\cline{2-3}
+                                         & False Negatives & 2 \\\cline{2-3}
+                                         
+        \hline\hline                                 
+        \multirow{5}{*}{Optimized model with larger  training data}  & \textbf{Total Test Logs}  & 25 \\\cline{2-3} 
+                                            & True Positives & 10 \\\cline{2-3}
+                                          & True Negatives & 13  \\\cline{2-3}
+                                          & False Positives & 2 \\\cline{2-3}
+                                         & False Negatives & 0 \\\cline{2-3}  
+                                         
+
+        \hline
+    \end{tabular}
+    \caption{Evaluation results of the proof-of-concept LSTM model and the newly optimized LSTM model on the test set}
+    \label{tab:eval}
+\end{table}
+\subsection*{Next Steps: }
+Next month we plan to complete the work on training anomaly detectors for each of the 6 targeted anomaly typesand focus on writing the ICCPS paper. 
+
+

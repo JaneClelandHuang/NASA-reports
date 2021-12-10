@@ -1,0 +1,51 @@
+\section{Goal 1: Develop a diverse dataset of annotated sUAS flight logs}
+\label{sec:DataCollection}
+\vspace{-8pt}\noindent\textit{The  lack of training data -- particularly data representing abnormal flight patterns that occur unpredictably represents a clear challenge for developing an in-time monitoring, assessment, and mitiation solution.  We address this through constructing a robust, publicly available, annotated data-set of normal and abnormal flight logs (Lead PI: Cleland-Huang).}% as laid out in {\it 5.2 Objective 1.} 
+
+%We will follow a three-prong approach for collecting and establishing a large and diverse dataset to support the development of onboard analytics. %Our approach includes (1) collecting runtime data from physical sUAS flights, (2) crowdsourcing post-flight collection of incident data, and (3) assessing the use of simulated data to enhance data collected from physical sUAS. 
+
+\subsection{Collecting Data from sUAS flights and incidents}
+\label{sec:controlled}
+\begin{wrapfigure}[15]{r}{0.55\textwidth} 
+\vspace{-12pt}
+\centering
+\includegraphics[width=.55\columnwidth]{figures/CrashMockup2.pdf}
+\caption{A prototype website for uploading flight logs and meta-data, and describing and tagging incidents.}
+\label{fig:mockup}
+\end{wrapfigure} 
+We will start by collecting hardware configurations, sensor data, airspace data (e.g., LAANCs, NOTAMS), and flight logs for our own sUAS flights from our collection of 50+ diverse sUAS. We will evaluate the data format currently used by the Aviation Safety Information Analysis and Sharing (ASIAS) for Flight Operational Quality Assurance (FOQA) \cite{FOQA} and adopt or modify it as needed to create a standardized approach for storing flight log data. 
+
+We will create a unique benchmark of test flights representing previously observed unwanted flight behavior. Examples include but are not limited to: (1) diverse temperatures, (2) windy conditions, (3) various payload weights, (4) low flights over rippling water, (5) sudden maneuvers for collision avoidance purposes, (6) low battery flights, (7) geofence perimeter breaches, (8) damaged propellers, and (7) areas with known interference.  Appropriate safety precautions will be taken.  We will develop a website to support the collection, anonymization, labeling, querying, replay, and tagging of flight data. These tags will be used to interpret anomalies discovered by Dronolytics. 
+
+\subsection{Crowd-sourcing post-flight data collection}
+
+We will actively recruit hundreds of FAA Part 107 pilots and hobbyists to contribute annotated flight logs and incident descriptions for anomalous flights. The key observation here is that nobody knows when an incident is going to occur, and  our own `controlled incidents' (see Section \ref{sec:controlled}) are unlikely to capture the full spectrum of problems on diverse hardware and environmental conditions. We will also request flight logs from normal flights. The website will include a replay and labeling mechanism to allow pilots to label incidents. It will also collect meta-data about the sUAS configuration, environment, and pilot's perspective on the incident (please see Figure \ref{fig:mockup}). Participants will be recruited  through sUAS discussion forums and local clubs and through our network of emergency responders (e.g., the South Bend Fire Department \cite{ankit-chi2020}). While companies such as Airdata UAV \cite{airdata} provide services for uploading and analyzing flight logs, this is a proprietary service and data is neither publicly available nor labeled with specific incidents. %Furthermore, the analysis focuses only on simple combinations of attributes in the flight log, whereas Dronolytics would discover abnormal patterns based on complex combinations of features and measurements.
+
+\subsection{Fidelity of simulated data}
+\begin{wrapfigure}[10]{r}{0.25\textwidth} 
+\vspace{-42pt}
+\centering
+{\centering\includegraphics[width=0.25\columnwidth]{figures/circle2.png}}
+\caption{Flight routes of simulated (blue) and physical (gray) sUAS differed dramatically due to communication latency.}
+\label{fig:circles}
+\end{wrapfigure}
+
+The use of simulated data could dramatically increase the scope of experimentation and potentially serve as a research catalyst.  However, its n\"aive use could also lead to incorrect and misleading results as illustrated in Figure \ref{fig:circles}). We will therefore perform a series of experiments to investigate the fidelity of diverse simulators (e.g., specific sUAS models available in Gazebo, Unity, JMavSim etc) versus the behavior of physical sUAS. %In previous experiments we compared the behavior of physical sUAS (3DR Iris+ and FieldHawk) using DroneKit-Python and 3DR's SITL environment with respect to sUAS' capabilities for maintaining a minimum separation distance through actions such as accelerating, decelerating, stopping `dead', ascending, descending, and maneuvering, and observed high fidelity of the simulator. However, in a second experiment involving latency of ground-to-air communication, the physical and simulated sUAS behaved very differently as illustrated in Figure \ref{fig:circles}.
+We will conduct systematic experiments with multiple simulators, sUAS, and tasks to assess when and where simulated data can be used to augment datasets from physical sUAS.
+
+\subsection{Limitations and Risks}
+\noindent\textbf{Sources of Error and Uncertainties.}
+As the quality of our predictive analytic solution  will be constrained by the scope, diversity, and fidelity of the training data, we aim to progressively increase the diversity and quantity of normal and abnormal sUAS flight data. 
+
+\noindent\textbf{The Resilience of the Approach and Methodology.}
+We start with data from controlled experiments, but  progressively build, and experiment with, a large real-world dataset.  %This requires the cooperation of sUAS remote pilots; however, we anticipate that the benefits will far outlive this specific project.
+
+\noindent\textbf{Special capabilities and advantages of facilities and equipment.} We have over 50 sUAS of diverse ages, sizes, models, and operating stacks that we can use (see facilities), with flying access to both urban and rural environments. PI Cleland-Huang is certified under FAA Part 107 and holds a § 107.35 waiver for the operation of Multiple sUAS. We will leverage our existing  \textit{Dronology} multi-sUAS research platform \cite{DBLP:conf/icse/Cleland-HuangVB18,ankit-chi2020}, which already integrates with the LAANCS system, to collect data and prototype our proposed Dronolytics solution.  %Dronology is designed to control, coordinate, plan, and monitor the flights of multiple semi-autonomous sUAS \cite{DBLP:conf/icse/Cleland-HuangVB18}, with the goal of supporting diverse emergency response scenarios \cite{ankit-chi2020,SPLC}. It includes  (1) centralized coordination and route planning  (2) Ground Control Stations (GCS) for enabling bidirectional communication with px4, Ardupilot, and ROS-based systems, (3) runtime monitoring of sUAS state (e.g., location, battery, power), (4) UI middleware to support custom UIs (eg., maps, flight plans, and runtime flight views), and (5) connectivity with AirMap and LAANCs, and more. 
+In addition, as signal strength and spectrum is often a contributing factor to out-of-control sUAS, Dr. Bertrand Hochwald (EE Professor at Notre Dame) will allow us to utilize RadioHound \cite{radiohound} to monitor and collect radio spectrum data as part of our flight logs.
+
+%\noindent\mybox{grayhighlight}{
+%\noindent{\bf Work Plan and Quantified Success Criteria:} Within the first 6 months we will have an infrastructure in place for evaluating flight logs from physical vs. simulated flights. By the end of year 1, for each of the conducted controlled experiments we will compare flight logs using different simulators (e.g., Gazebo, JMavSim), different sUAS models (e.g., Iris, Bebop, generic px4), and different environmental factors (e.g., weather) and perform statistical analysis to evaluate the fidelity of the simulator vs. physical sUAS \task{T1.4}.
+%{\scriptsize \bf(T1.4)}. 
+%}
+
+

@@ -1,0 +1,45 @@
+\section{Fault detection and Feature Interactions in sUAS:} The aim of these tasks is to identify runaway emergent behaviors due to interactions between hardware, software and environmental conditions using feature-based modeling and testing and search-based exploration using simulation.  
+During the summer Co-I Cohen has worked with Phd Students from PI Cleland-Huang's group to install DroneResponse autopilot software and its environment in order to support the investigation. Cohen brought on 2 PhD students in August.  
+
+\begin{itemize}[leftmargin=0em]
+\item[] 
+\begin{itemize}[leftmargin=*]
+% First subtask
+\item \textbf{Task 3.1:}~{Build and refine relational models of the sUAS configuration space.}
+\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\large a.~\hl{Build initial feature models} &06/21&10/21&Active\\
+\large b.~\hl{Create feature-based simulation environment}   &08/21&12/21&Active\\
+\large c.~Semantic partitioning of feature space  &&&Planned\\
+\end{tabular}
+\end{table}\vspace{-8pt}
+% Second subtask
+\item \textbf{Task 3.2:}~Systematically search for interaction Faults using  generated feature models. \vspace{-8pt}%Characterize features leading to failures as classification trees and utilize evolutionary algorithms for deeper search.  Experiments will be run in simulators on our HCC clusters. %Deliverables include the CIT samples, simulation scripts, evolutionary algorithms, experimental data and tagged artifacts of search. 
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\normalsize
+\large a.~CIT integrated and initial experiments run  &&&Planned\\
+\large b.~Develop alternative CIT models \& use higher strength CIT  &&&Planned\\
+\large c.~Evolutionary algorithms and integration with Goal 2 &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}%\vspace{-4pt}
+\end{itemize}
+\end{itemize}\vspace{-16pt}
+
+Specific activities and progress related to these tasks are:
+\begin{enumerate}
+\item Urjoshi is working on building an initial prototype to manipulate configurations and run simulations. This is needed for the infrastructure (Task 3.1b). She is currently using QGroundControl and px4 as it provides standalone functionality, and we will later integrate with Notre Dame's DroneResponse system.  This will allow us to work in parallel with the Notre Dame team.  She is also investigating the use of JMetal (\url{https://github.com/jMetal}) as our framework for our evolutionary algorithms (Task 3.2.c).  The advantage of using a framework such as JMetal is that it has multiple algorithms built in (including multi-objective algorithms) along with common quality metrics for evaluation.  This will allow us to quickly move from single objective to multi-objective optimization when we are ready.  It also has a python version which should integrate well with both px4 and DroneResponse.  She is currently weighing the trade-offs (time/effort) of customizing JMetal versus building her own bespoke single objective evolutionary algorithm to start. 
+\item Salil is download and processing logs from \url{https://review.px4.io/browse}. He began with the first set of 2000, but is building up a larger database. He is focusing on collecting the set of configurations used in each flight(the parameters and the selected values) and has built a script to identify which are modified from the default. This will let us select an initial set of parameters to include in our feature model (Task 3.1.a). We expect to see a small number that are modified multiple times and will focus first on this set. These are the same parameters Urjoshi is working to include in her infrastructure.
+\end{enumerate}
+
+
+
+\subsection*{Next Steps:}
+We will build a first feature model using the features mined from the px4 logs and use this for our simulation environment/infrastructure.   We will start to explore the outcome of modifying the features on outcomes in the log. We will work with the Notre Dame team to determine how we can identify differences in the logs. 

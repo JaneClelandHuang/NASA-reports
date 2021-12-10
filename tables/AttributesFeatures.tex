@@ -1,0 +1,38 @@
+\begin{table*}[!t]
+\centering
+%\resizebox{\textwidth}{!}
+ \small\addtolength{\tabcolsep}{-4.8pt}
+\caption{Key attributes that serve as indicators of various types of faults in ArduPilot and Px4}
+\label{tab:Indicators}
+\begin{tabular}{|L{.2cm}|L{6.4cm}|L{5cm}|L{4.5cm}|}
+\hline
+ & Description& ArduPilot & PX4 messages   \\ \hline
+\multirow{5}{*}{\rotatebox[origin=c]{90}{\bf Mechanical}} & {\bf Actual Attitude}: represented by roll, pitch, and yaw in degrees & ATT.Roll, ATT.Pitch, ATT.Yaw  & vehicle\_attitude\_estimate \\ \cline{2-4}
+ & {\bf Desired Attitude}: represented by roll, pitch, and yaw in degrees & ATT.DesRoll, ATT.DesPitch, ATT.DesYaw & vehicle\_attitude\_setpoint  \\ \cline{2-4} 
+ & {\bf Actual Attitude Rates} to compensate for difference in actual and desired attitude (degrees/sec) & PIDR.Act PIDP.Act PIDY.Act RATE ( for some old versions)  & vehicle\_angular\_velocity \\ \cline{2-4}
+ & {\bf Desired Attitude Rates} needed to compensate for difference in actual and desired attitude (degrees/sec) & PIDR.Tar PIDP.Tar PIDY.Tar  & vehicle\_rates\_setpoint \\ \cline{2-4}
+ & {\bf PWM outputs} to power ESCs/motors (Typically set between 1100 to 1900)& RCOUT & actuator\_outputs  \\ \hline
+ 
+ \multirow{3}{*}{\rotatebox[origin=c]{90}{\bf Vibration}}  & {\bf Vibration measures}: Standard deviations of accelerometer measurements (typically values under 30 are acceptable) & VIBE.VibeX, VIBE.VibeY, VIBE.VibeZ, VIBRATION.vibration\{\_x,\_y\_z\}$^T$   & N/A  \\  \cline{2-4}
+ & {\bf Raw accelerometer values}: PID outputs from rate controller sent to the mixer to generate PWM outputs & IMU.AccX, IMU.AccY, IMU.AccZ  & vehicle\_acceleration \\ \cline{2-4}
+  & Actuator controls & RCIN & actuator\_controls  \\ \hline
+
+\multirow{3}{*}{\rotatebox[origin=c]{90}{{\hfill{ \bf Compass Error}\hfill}}}: & {\bf Throttle}: Shows generated throttle signal & CTUN.\{ThO,Thl\}, CURRENT.thr, RCIN.C3, VFR\_HUD.throttle, actuator\_ controls.control $^T$  & actuator\_controls.control  \\ \cline{2-4}
+ & {\bf Raw magnetic field measurements}: across x,y, and z axes  & MAG.MagX, MAG.MagX, MAG.MagZ,  & vehicle\_magnetometer sensor\_mag  \\ \cline{2-4}
+ & {\bf Norm of magnetic field}: considering raw values across x,y, \& z axes &  CUSTOM.mag\_field$^T$  & N/A   \\ \hline
+ 
+ \multirow{3}{*}{\rotatebox[origin=c]{90}{\bf Power}} & {\bf Battery Voltage} & BAT.Volt CURR.Volt  & battery\_status.voltage\_v  \\ \cline{2-4} 
+ & {\bf Board Voltage}: received at the board & POWR.Vcc, CURR.Vcc, HWSTATUS.Vcc$^T$    & N/A  \\ \cline{2-4}
+ & {\bf Battery Current}: drawn from the battery & BAT.Curr CURR.Curr  & battery\_status.current\_c \\ \hline
+ 
+\multirow{3}{*}{\rotatebox[origin=c]{90}{\bf GPS}}&
+{\bf Satellites}: Number of satellites visible to receiver
+ & GPS.NSats & sensor\_gps.satellites\_used satellite\_info.count, GPS\_RAW\_IT.satellites\_visible$^T$   \\ \cline{2-4}
+&{\bf Dilution of Precision (DOP)}: Accuracy measure of GPS signal dependent upon the geometry of connected satellites  & GPS.HDop GPS.VDop  & sensor\_gps.hdop sensor\_gps.vdop, GPS\_RAW\_IT.eph$^T$    \\  \cline{2-4}
+ & {\bf Position accuracy}: Standard deviation of horizontal and vertical position error & N/A & sensor\_gps.eph sensor\_gps.epv   \\ \hline
+
+\end{tabular}%
+\\ \vspace{2pt}
+{\bf Attribute$^T$}: Attributes sent to ground control station and available in Telemetry log (TLOG). All other attributes stored onboard.
+
+\end{table*}

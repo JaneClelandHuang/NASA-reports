@@ -1,0 +1,64 @@
+\section{Questions from 6 Month Review Presentation}
+\label{sec:response}
+
+\begin{enumerate}
+    \item {\bf [Steven Young] On one chart they talked of 63 flight logs used for looking at Roll, Vibration, and Compass anomalies. How did they select the 63 from the 53,000? Would it be difficult to look at more of the logs for these types of issues? To look for other issues?} \vspace{4pt} \newline To clarify, the 63 flight logs used in our experiments were $ArduPilot$ logs. Flightlogs in the train and validation datasets were taken from our own UAVs, whilst flight logs in the test set were all taken from open discussion forums in which the actual anomalies were broadly discussed and consensus about the anomaly was achieved. We used these flight logs for our initial study, primarily because we could confirm whether accidents or anomalous behavior had actually occurred, and in the case of the forum logs, had confirmation from experts.  As explained earlier in this report, our plan is to extend to the larger px4 dataset as already described in Task 1. \newline
+    \noindent\fbox{%
+    \parbox{0.93\columnwidth}{%
+    {\bf Note: Copied from Task 1 above:}
+    (1) Build functioning anomaly detectors for px4 and Ardupilot based on a small annotated dataset, (2) Once we achieve `decent' accuracy for each type of anomaly, then use the trained models to detect anomalies in the larger dataset and automatically annotate them with $candidate$ anomalies, (3) Use our annotation tool to evaluate the candidate anomalies.  For step $\#3$ we will have multiple trained evaluators look at each log.  As our current analysis is on Ardupilot logs, the next step (in January) is to repeat the same experiments against px4 logs -- again using flight logs discussed in the forums as the test set. Once we have affirmed and/or retrained the anomaly detector for px4 logs, we will commence with step $\#3$ in order to ultimately deliver a much larger dataset of annotated anomalies.  We will use some orthogonal threshold-based heuristic techniques to inspect all suspect parts of the flight log in order to partially address the recall problem.
+    }}
+\item {\bf [Steven Young] There was a chart with a Table of "common failures". The list looked good. The one item I didn't see was Lost Link (C2 or TM link). Did this condition occur in any of the logs? Or was it not part of the logged data?} \vspace{4pt} \newline
+Good question. It wasn't part of the `default data' collected in the logs. Following a very quick inspection, I (JCH) don't see it as a monitorable property (but may be searching for the wrong term here: \url{https://dev.px4.io/v1.10\_noredirect/en/middleware/uorb\_graph.html}. Nafee can check for this more thoroughly. However, it is easily captured with a simple runtime monitor checking for heartbeats.
+
+One issue we are working on with our own system is that our `Ground Control Station' (i.e., all our code for controlling the drone) is now actually onboard the drone. Therefore the meaning of the term $loss~of~signal$ actually changes as the primary communication signal comes directly from the onboard computer and the flight controller. We are instituting a heartbeat mechanisms between the onboard compute and the ground. 
+
+Anyway, we can capture a very diverse set of attributes (far more than represented by the default log data), and can also implement a custom runtime monitor to capture additional data.
+
+\item {\bf [Steven Young] On the detectors work, I'm curious how these differ from the COTS software. For example, the PX-4 software will flag excessive vibration and warn the user. Maybe the ND detectors are meant to be independent detectors in case the COTS fails or has excessive Pfa or Pmd. } \vspace{4pt} \newline
+Currently, software systems deployed on/as ground control systems, such as QGroundControl (px4,Ardupilot) or MissionPlanner (Ardupilot) receive telemetry data from the flight controller. This includes data needed to identify vibration. In my experience flying drones, they have not provided this warning even though high vibration has occurred. Further, the post-flight analysis of flight logs can generate vibration graphs and interpret them; however, the results are visual and/or based on threshold values. In our IPSN paper we did compare threshold-based approaches with the deep learning models (ANN and LSTM) and found far more accurate results with a trained model.  Most importantly, (1) we need to acquire this data during flight in close to real-time, so that we can actually react to emergent problems, and (2) we need to untangle multiple symptoms -- which at this point we suspect occur together.  For example -- vibration might have several causes, so we want to look at multiple attributes in an effort to diagnose the problem and take correct migitations.
+
+
+\item {\bf [Steven Young] On the performance analysis of the detectors, how is ``accuracy" calculated? Also, could they produce estimates for probability of false alarm (Pfa) and probability of missed detection (Pmd)? The latter is also used sometimes as a measure of integrity (I=1-Pmd).} \vspace{3pt}\newline We currently computed accuracy based on ground truth i.e., we know from the expert discussions in the forum whether the flight log includes one of our three targeted anomalies. We compute accuracy based on TP (True Positive), FP (False Positive), TN (True Negative), and FN (False Negative) -- computed for each flight logs as follows, where Accuracy = (TP+TN)/(TP+TN+FP+FN). Please see Algorithm 1 on the following page.
+
+\begin{algorithm}
+\SetAlgoLined
+\For{each flight log in the test set}{
+   \uIf{Ground truth indicates that an anomaly exists in the log}{
+    \uIf{Anomaly is detected at the correct time period}{
+      True Positive\;}
+    \uElseIf{No anomaly is detected}{
+      False Negative\;}
+    \uElseIf{Anomaly is detected at incorrect time period}{
+      False Positive\;}
+   }\Else{
+   \uIf{Anomaly is detected anywhere in the log}{
+      False Positive\;}
+   \Else{True Negative\;}}
+    % Parse the log using the anomaly detector\;
+    % \If{}{the anomaly exists in the log\;
+    % \uif{}{the detector detects the anomaly at the correct location in the log file}
+    % \uif{}{the detector detects the anomaly at the correct location in the log file}
+    % }
+} 
+We hesitated to provide more complex metrics given our small dataset; however, we can certainly do so once we move to the larger curated dataset.
+
+ \caption{Accuracy Computation for specific anomaly type}
+ \label{pattern:1}
+\end{algorithm}
+
+
+\item {\bf [Steven Young] Curious about the SME's that were used. How many? Just opinion of one, or a consensus-based group. }  \vspace{4pt} \newline
+For the training and validation datasets, it was the opinion of one. However, for the test dataset (on which results are based), the results were based on forum discussion and feedback plus our own confirmation of the problem.  We carefully read the entire discussion and looked for consensus decisions. 
+
+\item {\bf [Steven Young] Anomaly detection work should know about Nikunj' body of work and recent work. Maybe something they can leverage or apply. On flip side, maybe Nikunj can leverage or apply some of the ND stuff. I wonder how difficult to give Nikunj access to the 53,000 logs, or a subset of them? Would it be worthwhile to pursue?} \vspace{4pt}\newline
+Nitesh Chawla is very familiar with Nikunj' general body of work, but we hadn't previously seen his work on anomaly detection.  Thanks for pointing it out to us.  We will read all relevant papers we find. From Nikunj's google scholar profile, the most relevant paper we have found is: \vspace{3pt}\newline
+Nikunj Oza, Kevin Bradner, David L. Iverson, Adwait Sahasrabhojanee and Shawn R. Wolfe. ``Anomaly Detection, Active Learning, Precursor Identification, and Human Knowledge for Autonomous System Safety'', AIAA 2021-1771. AIAA Scitech 2021 Forum. January 2021. \vspace{3pt}\newline
+If there are any other particularly relevant papers, please let us know. 
+Furthermore, we welcome Nikunj to collaborate with us and our students. 
+
+\item {\bf [Additional question from presentation] To what extent are your results generalizable across different UAVs and environmental conditions?} \vspace{3pt}\newline This is still an open question; however, the Ardupilot experiments were conducted using three fairly diverse types of drones -- namely the America Spreading Wings
+S900 hexcopter, and two smaller quadcopters (i.e., the 3DR Iris and the AeroHawk). We trained a shared model for each targeted anomaly using both ANN and LSTM, and observed that the models worked well on flight logs from all three types of UAVs. However, this question certainly warrants further investigation.
+
+In addition, we have previously downloaded very detailed local weather conditions for all of our own Ardupilot flight logs. We haven't explored this data yet; however, we plan to do so. Based on our own experience, it is evident that certain flight anomalies are caused directly by low temperatures and/or high winds, and this will be an interesting experiment to explore in the future. (Note: once we setup our infrastructure, these kinds of additional experiments are great projects for our Undergraduate students looking to engage in research projects). 
+\end{enumerate}

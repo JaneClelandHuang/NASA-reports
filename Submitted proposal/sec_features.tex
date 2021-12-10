@@ -1,0 +1,82 @@
+\section{Goal 3: Fault detection and Feature Interactions in sUAS}
+\label{sec:faults}
+\vspace{-8pt}
+\noindent{\it We will address the challenge of finding runaway emergent behaviors due to interactions between hardware, software and environmental conditions using feature-based modeling and testing and search-based exploration using simulation.  This work will  model relevant features in sUAS and identify semantic regions of potentially interacting features.  Systematic sampling will be used to test for emergent behavior and to refine the model through the dynamic discovery of constraints.  Evolutionary algorithms will then be designed to search for more complex interactions (Lead co-I: Cohen).
+}
+
+In the previous thrust on time-series event prediction, we detect abnormal patterns of sUAS behavior based on measured sensor, environmental, and operator data.  We will complement this approach by proactively sampling system configurations to search for feature interactions that lead to the observed abnormal patterns.  The problem of \textit{feature interactions}, or emergent behavior that is observed only under specific combinations of discrete features, is a well-studied problem both from a requirements perspective \cite{devries:2018,shaker:2012} and from a testing perspective \cite{abdessalem:2018,garvin:issre}.  We use the testing perspective in this work.   If we return to the Taranis X9D+ failure pattern (Figure \ref{fig:pattern}), the failure discussion identifies specific features (receiver, telemetry link, runtime fight-modes, signals, and environmental information) involved in the failure. Our goal is to find combinations of features that interact a priori, however this requires overcoming several challenges as addressed throught the following research thrusts.%. We present our research thrusts on this problem next. 
+
+%\begin{wrapfigure}[20]{r}{0.55\textwidth} 
+\begin{figure}[t]
+\vspace{-10pt}
+\centering
+\includegraphics[width=.86\columnwidth]{figures/feature-example2.pdf}
+\caption{Simplified Pixhawk 4 configurations. Top left (a) is a relational model (Flight Mode, GPS, FailSafe Mode, and Estimator); (b) is a feature model with 2 constraints shown as implications; (c) is a 2-way CIT sample for the unconstrained model.}
+\label{fig:feature}
+\vspace{-10pt}
+%\end{wrapfigure}  
+\end{figure}
+
+
+\subsection{Feature Modeling and Refinement}
+%To reason about and detect feature interactions, a model of the system features is needed. 
+We will use relational models and feature models to reason about and detect feature interactions. Figure \ref{fig:feature} shows a small (simplified) example derived from the Pixhawk 4 documentation. Figure \ref{fig:feature}(a) is a relational model with \textit{factors} (columns) and their \textit{values} (rows), that can be configured (Flight Mode, GPS, FailSafe Mode, Estimator).  Flight Mode can be of three types, \textit{stabilized}, \textit{position}, or \textit{altitude}. It can also have a GPS, but this could be removed in GPS-starved environments to reduce the weight of the sUAS, therefore it is optional (\textit{yes}, \textit{no}). FailSafe Mode can be used to define the behavior when the battery dips below a threshold. We show three modes (warning, land and return).  Last, there are two Q-Estimators. The system has has $3\times 2 \times 3 \times 3$ or $36$ possible configurations.  
+
+%While this model represents the core functionality of the system
+This model leaves out important dependency information between factors and their values.  \textit{Feature modeling}\cite{Kang1990}, represents the system features as a tree with dependencies and relationships, defining the exact set of valid system configurations. Existing tools that exist can bi-directionally convert models between the graphical representation and first order logic\cite{featureide}. We previously defined approaches for translating a relational model to a feature model \cite{rosatea:2006}. Figure \ref{fig:feature}(b) shows a feature model containing three mandatory features (Flight Mode, FailSafe Mode and Estimator) and one optional feature (GPS). In practice, FailSafe mode can be turned off making it optional; we leave that out for simplicity.  The three mandatory features each have alternative choices; we select exactly one of each of those choices during configuration.  The documentation mentions two constraints.  FailSafe Mode of \textit{return} only works when there is a GPS, and GPS always uses the default Estimator.  The constraints reduce the number of combinations to $21$ and are documented as implications.
+
+User manuals provide a starting point for building an accurate feature model, however, domain knowledge (i.e., from PI Cleland-Huang and other Part 107 flyers) is essential for understanding normal operating conditions and identifying equivalence classes for features.  Systems can also have hidden constraints \cite{casa:2010,Shi:2008,DBLP:conf/kbse/CashmanCRC18}, and feature \textit{masking} may hide emergent behaviors \cite{masking:2014}.  Scalability is also a challenge as the number of potential features in an sUAS can be in the thousands and the possible number of configurations grows exponentially with the number of features. This suggests that even the most efficient sampling techniques, may fail to scale. We address both of these using dynamic iterative exploration.
+
+\noindent{\bf   Iterative Feature Model Refinement.~}
+Initial feature models will be built from system documentation and refined in stages. We begin with a $k$-hop algorithm  \cite{garvin:issre} that modifies $k$ feature changes one at a time (exhaustively). Initially, $k$ is 1 and increases at each stage of the algorithm. The final $k$ will depend on the number of features. In practice it will likely be bound at $k$ of 2 or 3.  This provides information about features that are incorrectly defined. It can detect features that mask others, and identify sets of $k$ features that are incompatible or required together.  We also use the $k$-hop analysis to heuristically define semantically interacting clusters of features which can change behavior when combined \cite{Memon:2010}.  We will find combinations of features that cause {\it changes in observed patterns} (states) and group them into semantic interaction groups. Combinations that do not cause changes can be separated.  We will then focus our exploration (next section) within these smaller groups and explore the use of domain knowledge for correctly clustering interacting features. 
+
+\subsection{Systematic Sampling and Search to find Interaction Faults}
+The exponential number of unique system configurations creates a non-trivial challenge for finding feature interactions.  Returning to our example (Figure \ref{fig:feature}), the unconstrained version has 36 configurations.  If we add 3 more features, each with 4 values, the number of configurations grow to $2,304$. %With an additional 3 optional features (Boolean choices)the space grows to over 18 thousand configurations.  
+The number of features in a typical sUAS can be in the hundreds or thousands, and even 100 binary features leads to more than $10^{30}$ possible configurations.  This explosion in the configuration space means finding feature interactions requires intelligent sampling or search. We propose to use both.
+
+\noindent\textbf{Combinatorial Interaction Testing.}
+We will first apply combinatorial interaction testing (CIT) to look broadly for feature interactions. CIT can be used in combination with classification trees to characterize features that lead to interactions \cite{masking:2014}.  CIT is a sampling technique derived from design of experiments. It  systematically samples across a broad space of factors at a particular strength (denoted as $t$). CIT uses the relational view of the model and can incorporate constraints \cite{casa:2010}. CIT uses a mathematical object (a {\em covering array}), defined as $CA(N;t,k,v)$. It is an $N \times k$ array on $ v $ symbols such that every $N\times t$ sub-array contains all $t$-tuples from the $v$ symbols {\em at least} once.  In a covering array $N$ is the sample size. In Figure \ref{fig:feature}, $k$ is 4 (these are the factors). In practice $v$ can be different for each factor (we leave out the longer definition).  In our example, $v$ is 3, 2, 3,  and 2.  The parameter $t$ tells us how strongly to 
+test the combinations. If $t=2$ we call this {\em pairwise} CIT.  Figure \ref{fig:feature}(c) shows a minimal pairwise sample for the unconstrained model with 9 configurations. All pairs of values between each of the columns occurs at least once. For instance, altitude is used with and without GPS, for all of the FailSafe Modes and with both Estimators. The intuition of CIT is that low order interactions (combinations of 2 or 3 features) tend to lead to failures. This intuition has been confirmed and documented in many software and hardware based systems\cite{garvin:issre,kuhn:2004}. 
+
+While CIT is effective for identifying faults due to a small number of features, it cannot guarantee that interactions beyond the strength tested (e.g. 2 or 3) are found. For instance, we do not see the combination (altitude, no, return) in this sample; interactions of higher strength can be missed.  Second, 
+while the sample sizes scale logarithmically with respect to $k$, this result is for the binary case, and in practice, the number of values for each factor impacts the practicality of using it. If two factors have 10 values each, a pairwise sample needs at least 100 configurations regardless of how many values the other factors have. 
+%If we have 5 factors, each with 20 choices, a $3$-way sample would need at least 8,000 configurations in the sample. Instead, if we have 20 features that are binary, we can build a 3-way sample using less than 25  configurations.  
+%The semantic grouping and model refinement in the previous research approach can help to reduce the size of the CIT samples, however, it may miss (1) higher order interactions, and (2) fail to scale where the number of choices are too large.  
+Our next research thread addresses these limitations.
+
+%\subsubsection{Searching for Interaction Failures.}
+ \noindent\textbf{Using Evolutionary Algorithms.}
+ Evolutionary algorithms, such as genetic algorithms \cite{harman:survey,DBLP:books/sp/03/GK2003}, mimic biological evolution to evolve (or optimize) a \textit{population} towards a system goal. Genetic algorithms begin with a population of individuals. Each individual (a chromosome) is a system configuration.  The resulting behavior for each chromosome is its \textit{fitness} which we can minimize or maximize based on our optimization goal.  We then use selection to choose the fittest half of the population and these (parents) mate via  \textit{crossover} which exchanges genes between sets of parents creating the second half of the population for the next generation (the children). This is followed by a mutation step, after which the next iteration (generation) begins. An evolutionary algorithm will run until a known optimum is found, a number of iterations passes, or the algorithm is stuck. %In  Search Based Software Engineering (SBSE)\cite{harman:survey}, many common software engineering problems have been translated into search problems, such as software test generation and automated program repair. 
+ Co-I Cohen has significant experience using genetic algorithms to address many common software engineering problems\cite{YuSCR18,JiaCHP15,casa:2010}. 
+ %Her tools that she uses for generating combinatorial interaction test suites all use some form of search. 
+ We plan to use patterns of behavior such as those observed in Goal 2 to define the fitness. However, 
+%However, the exact fitness which can guide our algorithm, will involve exploration of the search space. A good fitness function has to provide a smooth surface that can guide the algorithm. Flat landscapes, where large portions of the configuration space returns the same behavior, leading to large plateaus, can hurt the ability of the search to find the emergent behavior. 
+if we observe that the patterns are composed of competing objectives we will use multi-objective optimization.
+%which balances more than one objective through the use of a Pareto front (a set of dominating solutions along a curve).  
+
+
+We will begin with random exploration to tune the initial fitness function.  Once we define an initial fitness, we will reduce the configuration space to one that we can exhaustively explore. We will leverage the semantic clusters for this. We will use the  exhaustive space to design sufficient operators for mutation and crossover, and to gain confidence in its performance.  We will then expand the feature model and tune it to the real configuration space (which we cannot exhaustively explore). We will leverage recent work on a similar problem in a bioinformatics tool\cite{sinha:2020} for this part.
+%We have recently performed an exhaustive analysis for a bioinformatics tool with this goal in mind \cite{sinha:2020} and are building techniques to tune optimization algorithms in this manner. 
+%Systems which are heavily data dependent (such as in a flight paths) there may be differences in optimization based on the input data. However, we also found common patterns which are small in number compared to the potential input space, therefore we expect we can use limited data sampling to find interesting behaviors.   
+
+\subsection{Integration with Detection of Anomalous Flight Patterns}
+We will integrate the exploration from both CIT and evolutionary algorithms into the proposed research of Goal 2 to detect and interpret anomalous flight patterns. In that research, the patterns observed represent data from flight logs and simulations, however the approach lacks a systematic exploration and is dependent on potentially sparse information. The advantage of using CIT and evolutionary algorithms is that we explore the space of features both systematically and then in-depth. During the exploration process we will observe both normal and anomalous behavior. We plan to capture logs from our exploration, and tag the observed patterns to provide additional data for the anomaly detection research.  
+
+\subsection{Limitations and Risks}
+%We address limitations and risks of this research thrust next.
+
+\noindent\textbf{Sources of Error and Uncertainties.}
+%The feature models we build will be based on hardware, software and some environmental conditions. 
+Our reliance on simulation creates some uncertainty and limitations; however,
+%We expect that it may bias the results towards those features for which we have a reliable simulator, and/or create some false positives. 
+the number of configuration options is large enough in our existing systems, that we expect to discover interesting interactions. We will perform some \textit{ground truth} testing with the physical sUAVs, to calibrate the reliability of our results and reproduce failures found in a physical environment (given the ability to do this safely).
+
+\noindent\textbf{The Resilience of the Approach and Methodology.}
+We will augment the solution from research goal 2 (Section \ref{sec:patterns}) with that of CIT and search, thereby increasing the strengths and weakness of each technique. 
+We will examine open source logs to explore evidence of similar types of interactions in the field.  Finally, we will use well known techniques, such as flag transformation and logarithmic smoothing, to differentiate interactions more clearly. 
+%We will randomly extract data from simulations early on to learn about potential issues.
+
+
+\noindent\textbf{Special capabilities and advantages of facilities and equipment.}
+We have access to a High Performance Computing cluster for running large numbers of simulations for this work allowing us to experiment with multiple sUAS firmware models. %PI Cohen has priority access to 4 nodes. %purchased 4 nodes which gives her students priority access in the queues.
+

@@ -1,0 +1,50 @@
+\section{Detect and Diagnose Abnormal Flight Patterns:} The aim of these activities is to train and evaluate a time-series predictive analytics solution for automatically detecting, labeling, and classifying flight anomolies. These activities are largely dependent upon infrastructure-building tasks T1; however, we have started work on Tasks T2.1a and T2.2a as discussed below.
+
+\begin{itemize}[leftmargin=0em]
+
+\item[] 
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.1:}
+Create flight anomaly taxonomy\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\large a.~\hl{Create a taxonomy of known sUAS anomalies}&05/21&10/21&Active\\
+\large b.~{Extend the taxonomy with additional anomaly patterns}&&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.2:}
+Train and test predictive analytics and anomoly classifier\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\large a.~\hl{Proof-of-concept using LSTM with Ardupilot \& px4 logs}&05/21&10/21&Active\\
+\large b.~Train \& evaluate MSCRED using simulated data&&&Planned\\
+\large c.~Train \& evaluate MSCRED on physical data&&&Planned\\
+\large d.~Minimize the model for on-board deployment&&&Planned\\
+\large e.~Train classifier to generate human-understandable tags &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+\end{itemize}
+
+Specific activities related to anomaly detection and diagnostics performed during this period have focused on the following:
+\begin{itemize}
+    \item {\bf Taxonomy of known sUAS Anomalies: {\it [Task 2.1a]} } PhD student Md Nafee Al Islam has performed a systematic study of Ardupilot and px4 discussion forums in which pilots have occasionally uploaded flight logs which have been analyzed and discussed by forum contributors. By studying these discussions, we have been able to identify a set of commonly recurring anomalies. These include: mechanical errors, high vibration, compass interference, gps glitches, power issues, and loss of link. We have identified specific examples of each of these and have used this {\bf initial taxonomy} to guide our tool development and proof-of-concept efforts.
+    \item {\bf LSTM Proof of Concept: {\it [Task 2.2a]} } We have applied an initial proof-of-concept analysis using LSTM (an unsupervised approach) to see if it can learn and detect known anomalies in Ardupilot flight logs.  The goal is to match the findings of the experts as discussed in the forums.  This is a work in progress, but initial results show that LSTM can match the results.  We expect to report more precisely on this in our next reports -- and are working on an October submission to CPS-IOT week (the premiere conference in CyberPhysical Systems).
+\end{itemize}    
+
+\subsection*{Next Steps: }
+Next month we plan to perform some initial annotation activities. We will apply LSTM to both ardupilot and px4 data for the identified types of anomalies, and will explore automated (candidate) annotations based on these results. We will perform initial inspections of the results. The aim is to establish a process and then recruit undergraduates to help with vetting the auto-generated annotations.  Chawla and Cleland-Huang will also establish a detailed timeline that includes creating a more fine-grained project plan with specific anomaly detection algorithms. 
+
+

@@ -1,0 +1,111 @@
+\section{Fault detection and Feature Interactions in sUAS:} The aim of these tasks is to identify runaway emergent behaviors due to interactions between hardware, software and environmental conditions using feature-based modeling and testing and search-based exploration using simulation.  
+
+\begin{itemize}[leftmargin=0em]
+\item[] 
+\begin{itemize}[leftmargin=*]
+% First subtask
+\item \textbf{Task 3.1:}~{Build and refine relational models of the sUAS configuration space.}
+\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\large a.~\hl{Build initial feature models} &06/21&10/21&Active\\
+\large b.~\hl{Create feature-based simulation environment}   &08/21&12/21&Active\\
+\large c.~Semantic partitioning of feature space  &&&Planned\\
+\end{tabular}
+\end{table}\vspace{-8pt}
+% Second subtask
+\item \textbf{Task 3.2:}~Systematically search for interaction Faults using  generated feature models. \vspace{-8pt}%Characterize features leading to failures as classification trees and utilize evolutionary algorithms for deeper search.  Experiments will be run in simulators on our HCC clusters. %Deliverables include the CIT samples, simulation scripts, evolutionary algorithms, experimental data and tagged artifacts of search. 
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\normalsize
+\large a.~CIT integrated and initial experiments run  &&&Planned\\
+\large b.~Develop alternative CIT models \& use higher strength CIT  &&&Planned\\
+\large c.~Evolutionary algorithms and integration with Goal 2 &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}%\vspace{-4pt}
+\end{itemize}
+\end{itemize}\vspace{-16pt}
+
+
+Specific activities and progress related to these tasks are:
+\begin{enumerate}
+\item Salil downloaded the first 15,142 public px4 logs found at (\url{https://logs.px4.io/browse)}. He analyzed the parameters across all logs to learn which ones are commonly changed from default values. Our reasoning is that it lets us build an initial feature model with features relevant to pilots. There are a total of 1,564 unique parameters appearing in these logs.  Figure \ref{fig:histogram} shows a histogram of this data using the default histogram settings in \texttt{R}.  The \texttt{y-axis} shows the frequency and the \texttt{x-axis} shows the number of times a parameter was changed; the histogram is bucketing parameters by how often they were different than the default value.  The breaks are at $1000, 2000, ..., 15,000$. 
+
+First, we noticed that a small number of parameters (37 or 2.3\%) are modified in more than 90\% of the logs. We keep these as a special group. Since they are almost always modified some parameters in this group may be IDs or have other special meaning.  It is also likely that problems due to manipulation of these parameters may already be documented.  We also see that 39.7\% (or 621 parameters) always retain the default value. We ignore those for now.  Of those that are modified, 1,345 are modified less than 1,000 times and 943 (60.3\%) are modified less than 10 times.  We chose to start focusing our in-depth analysis in the middle, with parameters that seem to be relevant for pilots. We identified 94 parameters that are changed between 20\% and 77\% of the time.  We have read the documentation for this set of parameters, identified the possible value ranges, and any constraints (dependencies with other parameters) mentioned in the documentation.   
+
+Figure \ref{fig:params} shows a screenshot of some of this information. It lists the parameter, the range of values, specific values (if listed in the documentation), the data type, a description and any documented constraints.  We have completed this initial step for the 94 parameters boxed in Figure \ref{fig:histogram} and are working on the 37 in the most frequently modified group now.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=6.0in]{figures/parameters-histogram.pdf}
+\caption{Histogram showing Frequency of Configuration Parameters which are changed from the non-default value from analysis of 15,142 public PX4 logs. 39.7\% are never modified. A small percentage (37 or 2.3\%) are modified in almost all logs (greater than 90\% of the time). We are focusing on those in the middle range (modified between 3,000 (20\%) and 11,164 (77.4\%) of the time, shown in the box.} \label{fig:histogram}
+\end{figure}
+
+
+
+
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=6.0in]{figures/example-params.pdf}
+\caption{Example parameters from the list of 94.} \label{fig:params}
+\end{figure}
+
+
+
+\item Urjoshi continues to work on an initial prototype for our genetic algorithms (Task 3.1c). She has set up JMetal ((\url{https://github.com/jMetal}), a genetic algorithm framework for an existing configuration project  (not related to drones) and has designed a chromosome for our genetic algorithm. Each gene of the chromosome will be a single parameter in the chromosome. For instance, if there are three parameters, there will be three genes and the different values for those parameters will make up the choices (or alleles) for those genes.  In the intiial px4 chromosome the length is 7. This type of simple chromosome using actual values (as opposed to a bit representation) tends to work well on similar other problems in configurability and since it maps directly to the problem space tuning is more straight forward. 
+
+She has worked with Salil to identify the initial set of parameters to manipulate (see discussion above). She chose 7 parameters (6 from the group that are changed most of the time and 1 from the next group (the boxed area in Figure \ref{fig:histogram}). For  parameters in the first group she picked ones that seem to have a functional purpose (not ones with ID as part of their name).  Our initial feature model is seen in Figure \ref{fig:features}. This is a small part of the px4 parameter space, and is somewhat arbitrary, however it will allow us to explore an exhaustive space to test our algorithms, and is large enough to have an interesting landscape for search.  In addition it contains parameters that are modified often, meaning they should have relevance to pilots. Most of the features have 5-7 choices (the leaves), of which only one value can be selected at a time (they are mutually exclusive choices shown as a solid arc). The features are all required since at least one of their values must be selected (shown as solid circles).   One feature (IMU\_GYRO\_CAL\_EN) is a Boolean option that is either on or off (shown as optional with an open circle). This parameter enables IMU (Inertial Measurement Unit) gyro auto calibration.  
+
+Urjoshi has also identified the startup files which change the various parameters in px4 this month, and has run some initial experiments to see if random changes to these parameters impact different log outputs. While we do not yet have a fitness defined, we will need to be able to differentiate data in the output logs, so we ran some tests to see if there is any variation in the outcomes. We first tested several repeated runs of these parameters using the (same) initial values to confirm that individual runs have only a small (if any) variation in their outputs. This suggests variation observed is due to changes in the parameters.  She next randomly selected 24 different configurations from the feature model. Table \ref{tab:variation} shows this data. It shows the minimum and maximum values for the log outputs: \textit{distance}, \textit{average speed}, \textit{max tilt} and \textit{roll rate range}. For \textit{roll rate range} we give the minimum, maximum and the range in our table. While we have not systematically explored this space, our data suggests that IMU\_GYRO\_RATEMAX has the largest impact on differences in these parameters. According to documentation this is \textit{the maximum rate the gyro control data (vehicle\_angular\_velocity) will be allowed to publish at. It is the loop rate for the rate controller and outputs}.
+
+\begin{table}[h]
+    \centering
+     \caption{Variation in log values for several metrics over 24 different random configurations of the feature model. We show the minimum and maximum for each metric to get a sense for the size of variation. Individual simulations which are repeated using the same parameter values show almost not variation.}
+    \label{tab:variation}
+    \begin{tabular}{|l||r|r|}
+    \hline
+\textbf{Metric} & \textbf{Min} & \textbf{Max} \\
+       \hline
+       \hline
+distance (km)	&1.0	&1.5 \\
+       \hline
+
+avg. speed (km/hr)&	12.1	&13.1 \\
+       \hline
+
+max tilt (degree)&	24.2&	26.4\\ 
+       \hline
+
+roll rate range (degree/sec)&	4.0&	8.0 \\
+       \hline
+
+roll rate min  (degree/sec) &	0.4 &	10.5\\
+       \hline
+
+roll rate max  (degree/sec)	& 4.5	& 14.0  \\
+\hline         
+    \end{tabular}
+   
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=6.5in]{figures/featuremodel.pdf}
+\caption{Initial Feature Model. Consists of 113,400 possible px4 configurations.} \label{fig:features}
+\end{figure}
+
+
+\end{enumerate}
+
+
+
+\subsection*{Next Steps:}
+For our next steps, Salil and Urjoshi are working with the Notre Dame team to learn more about the 131 starting parameters that are used at least 3,000 times in the log. They hope to pare this down to parameters which are relevant and to incorporate constraints (dependencies) between parameter groups.  Salil has now downloaded 53,020 logs and is re-analyzing the data to see if the histogram changes.  This data will also be used for additional mining of information.  Urjoshi is working on the infrastructure to automate changing the configurations, running the simulation and finally extracting data from the resultant logs. This is needed to fully automate our process.  Last, we have an undergraduate researcher who has joined our team. He is working to map the meta-data on the px4 log website to output files from the log parser. He is building a cross reference that our entire team can use  since much of the time series data is contained in different, external csv files after extraction. 

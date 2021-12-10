@@ -1,0 +1,37 @@
+\section{Fault detection and Feature Interactions in sUAS:} The aim of these activities is to train and evaluate a time-series predictive analytics solution for automatically detecting, labeling, and classifying flight anomolies. These activities are largely dependent upon infrastructure-building tasks T1; however, we have started work on Tasks T2.1a and T2.2a as discussed below.
+During the summer Co-I Cohen has worked with Phd Students from PI Cleland-Huang's group to install DroneResponse autopilot software and its environment in order to support the investigation. Cohen is framing the research and experiments that will be launched in the Fall with two PhD students. Initial work has focused upon understanding the underlying px4 feature models.
+
+\begin{itemize}[leftmargin=0em]
+\item[] 
+\begin{itemize}[leftmargin=*]
+% First subtask
+\item \textbf{Task 3.1:}~{Build and refine relational models of the sUAS configuration space.}
+\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\large a.~\hl{Build initial feature models} &06/21&&Active\\
+\large b.~Create feature-based simulation environment   &&&Planned\\
+\large c.~Semantic partitioning of feature space  &&&Planned\\
+\end{tabular}
+\end{table}\vspace{-8pt}
+% Second subtask
+\item \textbf{Task 3.2:}~Systematically search for interaction Faults using  generated feature models. \vspace{-8pt}%Characterize features leading to failures as classification trees and utilize evolutionary algorithms for deeper search.  Experiments will be run in simulators on our HCC clusters. %Deliverables include the CIT samples, simulation scripts, evolutionary algorithms, experimental data and tagged artifacts of search. 
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\normalsize
+\large a.~CIT integrated and initial experiments run  &&&Planned\\
+\large b.~Develop alternative CIT models \& use higher strength CIT  &&&Planned\\
+\large c.~Evolutionary algorithms and integration with Goal 2 &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}%\vspace{-4pt}
+\end{itemize}
+\end{itemize}\vspace{-16pt}
+
+\subsection*{Next Steps:}
+Building an initial configuration (feature) model mined from existing PX4 logs. Identifying if changes to the configuration model are being captured during logging to support eventual log annotations. Work with Dr. Cleland-Huang's group to amend the simulator scripts to support that logging. Start building infrastructure to manipulate these features which will support the Genetic Algorithm Environment identified in Task 2.1a.

@@ -1,0 +1,25 @@
+\section{Goal 4: Safety Analysis and Assurance}
+\label{sec:Scenarios}
+\vspace{-8pt}
+\noindent{\it Our goal is not only to detect anomalies, but also to diagnose them, gain understanding of their underlying causes, and ultimately to identify mitigations. We therefore adopt a systematic safety-analysis and assurance approach using Fault Tree Analysis (FTA) and Safety-Assurance Cases (SAC) (Lead Investigators: Cleland-Huang, Cohen)}.
+
+We will leverage FTA to explore how system failure conditions can lead to a hazard \cite{Leveson1995,Storey:1996:SCC:524721, DBLP:conf/ftcs/1999,Reifer1979, DBLP:journals/ansoft/LutzW97}, and then construct Safety Assurance Cases to assure that hazards have been mitigated. We build upon a deep body of work in safety assurance of sUAS. For example, Denney and Pai~\cite{denney2014automating, depai2016,DenneyPH15,DenPaiWhi17} provide automation support and tools for creating and maintaining safety assurance cases and emphasize reuse of safety assurance cases by proposing domain-independent  and domain-specific patterns~\cite{FeatMark13, denney2016safety}. Other work  has created reusable safety case patterns as  building blocks for future product development~\cite{DePaPo12, HawkinsHK13, denney2014automating, depai2016, FeatMark13, BlooNetk14}, and techniques for supporting safety-case evolution ~\cite{Kelly2004SAC,kelly2001systematic}. In our prior work we have developed safety cases for sUAS in urban environments \cite{tse-preprint}, created tooling for safety-cases in agile environments \cite{DBLP:conf/icse/AgrawalKVRCL19,cleland2020breaking}; analyzed  human-drone interaction hazards \cite{suasHazards}; and  applied safety-cases to synthetic biology\cite{CohenFP16,FirestoneC18}.
+
+\begin{wrapfigure}[20]{r}{0.45\textwidth} 
+\vspace{-24pt} 
+\centering
+{\centering\includegraphics[width=0.42\columnwidth]{figures/FTA.PNG}}
+\caption{Patterns identified through time-series analysis \task{T2}, feature interaction analysis \task{T3}, and crowd-sourcing \task{T.1} are explored through Fault Tree Analysis (FTA). }
+\label{fig:fta}
+\end{wrapfigure}
+We will analyze failure patterns discovered as a result of time-series analysis, feature interaction analysis, and/or crowd-sourcing wisdom, and model them using a Fault Tree as illustrated in Figure \ref{fig:fta}. In this example, the root hazard is {\it sUAS is out of control} and the subhazard is {\it signal is lost}. The FTA shows the \emph{candidate} pattern (\scalerel*{\includegraphics{figures/pattern.PNG}}{B}), taken from the real-world example in Figure \ref{fig:HexCrash}, and labeled as P1. %As observed by the RPIC reporting the event, the loss-of-control may have been caused by a combination of hardware and radio interference -- in this illustrated example, we model faults as if the RPIC's suppositions were correct.  However, information included in our final fault trees will be derived from experimental analysis with degrees of uncertainty attached to each fault. Once all known contributing faults are modeled 
+We will perform standard FTA analysis including identifying cut-sets, and proposing mitigations (e.g., fault redundancy, monitoring, alerts, reconfigurations). Different mitigation strategies may be appropriate for different contexts. For example, when operating an sUAS in an urban area, out-of-control sUAS scenarios would require immediate remediation (e.g., dynamic reconfiguration only if a well-validated high-confidence solution is available, broadcasting of alerts to other aircraft in the area, and/or human take-over) in comparison to a similarly out-of-control sUAS in a remote rural area. 
+Finally (although not discussed here due to space constraints), we will build on our prior work (\cite{tse-preprint}) to create an initial set of safety-assurance cases (SAC) showing how common failure patterns can be mitigated. We plan to collaborate with a NASA employee on safety assurance (name omitted as per CFP).
+
+\subsection{Limitations and Risks}
+\noindent\textbf{Sources of Error and Uncertainties.}
+The safety analysis assets we create (i.e., FTAs and SACs) will be based upon the failure patterns and remediations we identify through our study. As such, their completeness will depend upon the quality of results we achieve.
+
+\noindent\textbf{The Resilience of the Approach and Methodology.} All FTAs and SACs will be released into the public domain for discussion, debate, and further experimentation.
+
+\noindent\textbf{Special capabilities and advantages of facilities and equipment.} We are developing a safety-analysis tool (SAFA) under NSF and Northrop Grumman funding which will support safety asset construction \cite{DBLP:conf/icse/AgrawalKVRCL19,cleland2020breaking}.

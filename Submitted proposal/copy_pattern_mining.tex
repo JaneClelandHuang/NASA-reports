@@ -1,0 +1,53 @@
+\section{Unsupervised learning of Abnormal Patterns from sUAS data}
+\label{sec:patterns}
+
+\jch{Please see overleaf comments.}
+
+\noindent{\bf Key Challenges Addressed:~} (Lead Investigator: Chawla)
+{\it Data collected from multiple sUAS represents a time-series of  heterogeneous variables collected from sensor data, environment data, alerts and warnings received from centralized systems such as UTM, ground control stations, human operators, and other sUAS. Furthermore, individual flight logs are quite large (more details)  (xref: Subtopic 2, Objective 2). 
+}
+\nc{Nitesh' section} 
+\jch{Nitesh -- please feel free to completely restart section \ref{sec:patterns} from scratch if you want.  I just dumped some ideas here before our discussion.}
+Data collected from multiple sUAS represents a time-series of  heterogeneous variables collected from sensor data, environment data, alerts and warnings received from centralized systems such as UTM, ground control stations, human operators, and other sUAS. Furthermore, individual flight logs are quite large (more details). 
+At least initially, we will not have the benefit of incident-labeled datasets, and so we will focus on identifying sequences of \emph{abnormal events} and differentiating them from normal event sequences. Our proposed research therefore involves (1) detecting abnormal patterns from a time-series of logged events, (2) manually classifying commonly occurring  abnormal patterns with human-understandable tags.  For example, (\jch{Work on small example}).
+
+\noindent\mybox{grayhighlight}{
+\noindent{\bf Quantified Success Criteria:} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id luctus nulla, vel commodo diam. Suspendisse ut arcu placerat, aliquet erat et, lobortis magna. Integer viverra in ligula et luctus. Curabitur eu nunc a urna convallis dapibus at at magna. Etiam neque est, molestie sed ante et, rhoncus tristique sem. Integer erat nisi, tincidunt sit amet elit quis, blandit maximus lacus. Vestibulum dignissim tincidunt diam, quis consectetur neque semper in. \jch{Add forward refs e.g., \task{T2.1}.}
+}
+
+
+\subsection{Time-Series Pattern Recognition}
+
+\noindent{\bf Experiments: } We will train and evaluate the pattern recognition algorithms using both physical sUAS data and simulated data. We will initially use large amounts of physical sUAS data to train the algorithms to recognize common (normal) patterns of operation, and will then evaluate whether it is able to identify abnormal patterns from flight logs associated with flight incidents. We will test the pattern recognition algorithms against large quantities of simulated data from normal flights to determine if the false positive rate is similar for simulated and physical data. We will repeat these experiments against datasets collected through our controlled experiments to determine whether the pattern detect can detect (the same) abnormal events in both the physical and simulated datasets.  We anticipate the experimentation process involving multiple iterations of train, validate, test (where the test data is previously unseen data used for evaluate the final algorithms).
+
+\subsection{Labeling commonly observed abnormal patterns}
+Based on the mined abnormal patterns, operator provided tags, and incident reports, we will apply an inductive coding approach to manually label a training set of identified patterns. The process will be guided by (1) operator provided tags which indicate human understanding of an incident, (2) tools that we will develop that attempt to explain the abnormal behavior such as {\it abnormally fast battery drain}.  We will also seek to interpret and identify more complex combinations of events.  For example, the co-occurrence of {\it abnormally fast battery drain} plus {\it faster direction switch to left than to right} could be an indicator of {\it worn propeller or inefficient propeller motor}). Unless the problem is extreme, it could be handled by a post-flight recommendation to change the worn propeller; whereas in the extreme case it could require a failsafe mechanism, such as Land-in-Place to activate.  Another example of a complex event is if the RPIC was flying the sUAS close to water rippling water using a vision based downward camera to support altitude hold. The observed abnormal pattern might be {\it inability to hold altitude} -- a known problem for this scenario. The combination of variables (i.e., vicinity to water, downward facing camera, and altitude jumps) would be an indicator of the more complex event {\it inability to hold altitude due to lighting conditions and ripples on the water} and the recommendation (or even automated failsafe) to {\bf increase altitude}. 
+
+Complex patterns can be automatically discovered if sufficient data is provided; however, when fewer examples are provided of the complex pattern -- expert sUAS pilots can reason about observed combinations of more primitive patterns as in the example of the rippling water.
+
+\noindent\mybox{grayhighlight}{
+\noindent{\bf Quantified Success Criteria:} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id luctus nulla, vel commodo diam. Suspendisse ut arcu placerat, aliquet erat et, lobortis magna. Integer viverra in ligula et luctus. Curabitur eu nunc a urna convallis dapibus at at magna. Etiam neque est, molestie sed ante et, rhoncus tristique sem. Integer erat nisi, tincidunt sit amet elit quis, blandit maximus lacus. Vestibulum dignissim tincidunt diam, quis consectetur neque semper in.
+}
+
+\subsection{Predicting future failures}
+One of the overarching goals of our work is to predict emergent failures while there is still time to remediate them.  For example, given the scenarios depicted in Figures \ref{fig:HexCrash} and \ref{fig:pattern}, the RPIC only discovered the problem after the sUAS entered an \emph{out-of-control} state; however, predictive analytic solutions can provide advanced warning to enable either a graceful degradation of functionality or immediate remediations before the loss-of-control event occurs.  (MORE).  \jch{This is an important aspect}
+
+\subsection{Abnormal Pattern Classifier}
+Once simple and complex patterns have been identified we will train a time-series event classifier to recognize them. \jch{Describe algorithms}. \jch{Also for software running on the drone we want to minimize power consumption, so I think it is interesting to explore whether we can minimize the number of features we train/detect/predict on -- as an initial rough guage approach. i.e., for covid we just fill in the simple form each day, and then as symptoms emerge we take more detailed tests}
+
+\noindent{\bf Experiments: } Basic experiments e.g., cross-fold experiments with the labeled dataset. Progressively testing new incidents as they occur. \jch{more coming here}.
+
+\noindent\mybox{grayhighlight}{
+\noindent{\bf Quantified Success Criteria:} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id luctus nulla, vel commodo diam. Suspendisse ut arcu placerat, aliquet erat et, lobortis magna. Integer viverra in ligula et luctus. Curabitur eu nunc a urna convallis dapibus at at magna. Etiam neque est, molestie sed ante et, rhoncus tristique sem. Integer erat nisi, tincidunt sit amet elit quis, blandit maximus lacus. Vestibulum dignissim tincidunt diam, quis consectetur neque semper in. }
+
+\subsection{Light-Weight Analysis}
+Just an idea -- we should have light-weight analysis that could be performed quickly (onboard or even on-ground) based on key indicator features.  i.e., this is just like taking a person's temperature to know that `something is wrong'.  Once we know something is wrong then we start deeper analysis.  (We need to consider the architecture here -- how much onboard processing?  If we have offboard analysis - we need to minimize data sent.  How `little' data is needed to detect and then to diagnose a problem.
+
+
+%\subsection{Some ideas for this section}
+%\begin{enumerate}
+%    \item Establish a baseline of normal behavior
+%    \item Detect abnormal behavior and specific patterns
+%    \item (Note:) I think this section comes before fault detection section and the specific failure scenarios as it creates a kind of baseline for both of them.  \jch{For Myra's section, these abnormal patterns create the objective function in the feature interaction experiments.}
+%    \item We will have a small (hopefully growing) set of field data cases which we can use to test the pattern mining i.e., when we have data collected from known incidents, is the abnormal behavior detector able to detect it and with \emph{how much warning}.  Can we replicate in the simulator?  If so -- can we force remediations??
+%\end{enumerate}

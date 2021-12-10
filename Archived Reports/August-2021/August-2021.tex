@@ -1,0 +1,51 @@
+\input{Monthly Reports/format}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+\begin{document}
+\fontsize{12}{13}
+\selectfont
+
+\begin{center}
+\textbf{\Large{\bf Safe Deployment of Small Unmanned Aerial Systems\\}}
+\vspace{6pt}
+\textbf{\Large{\bf through On-Board Monitoring and Assessment}}\\ 
+\vspace{6pt}
+\textbf{NRA ROA –2019 NNH19ZEA001N-SWS\\
+B.5 System-Wide Safety (SWS) Project}\\ \vspace{6pt}
+Monthly Report: August 6th, 2021 \\ \vspace{6pt}
+PI: Jane Cleland-Huang, (JaneHuang@nd.edu)\\
+co-I: Myra Cohen, (mcohen@iastate.edu)\\
+co-I: Nitesh Chawla,(nchawla@nd.edu)\\
+\end{center}
+
+\section{General Overview}
+Activities from project launch until the end of July have focused on three areas of our planned work with the primary aim of creating infrastructure needed for the remainder of the project. Please note that as this project started later than originally anticipated, and we performed additional work prior to the start of the project, we have refined the task breakdown according to our preliminary findings. The end deliverables of the project have not been altered. Data collection focuses primarily on data collection and annotation of flight logs from physical flights, and simultaneously establishing the infrastructure for working with simulated data.  In the following task decomposition, we have highlighted in blue the tasks that we have already started.  Please see the final Section for questions.
+
+\input{Task1}
+\input{Task2}
+\input{Task3}
+
+
+
+\section{Other Goals}
+\noindent Work on the following research goals is either not yet started or in very preliminary stages:
+\subsection{Safety Analysis and Assurance: }
+Our  goal  is  not  only  to  detect  anomalies,  but  also  to  diagnose  them,  gain  understanding of  their  underlying  causes,  and  ultimately  to  identify  mitigations.   We  plan to  adopt  a systematic  safety-analysis  and  assurance  approach  using  Fault  Tree  Analysis  (FTA)  and Safety-Assurance Cases (SAC). {\bf No progress has been made on this goal yet.}
+\subsection{ Architectural Analysis and Integration: }
+A key component of this research involves evaluating existing NAS and SWIM architecturesto determine how well they can support in-time assessment functions – such as our Dronolytics  solution.  We  will  design,  implement,  and  deploy  a  highly  modular,  scalable, low-power consumption prototype system with capabilities to interface with existing NAS infrastructures. {\bf Minimal progress has been made on this goal;} nevertheless, we have deployed a set of microservices, connected via MQTT, as a cloud-based ecosystem for coordination between multiple sUAS.  This ecosystem, will provide the foundation for close to real-time data collection and data analysis.
+
+\section{Questions to NASA and other updates: }
+Some of the infrastructure work has involved technical IT people and undergraduate students (e.g., building the website). How much flexibility do we have on our budget to use money that was budgeted for a PhD student to other personnel during this initial infrastructure phase?  We currently have one PhD student on the project, and three more coming online in the Fall -- but I would like to use some of our PhD student funding from the first few months to pay for this initial infrastructure work).  Thanks!
+
+We are in the process of scheduling biweekly meetings for the Fall Semester and will coordinate with Lilly.
+\end{document}
+
+
+

@@ -1,0 +1,140 @@
+\section{Detect and Diagnose Abnormal Flight Patterns:} 
+The aim of these activities is to train and evaluate a time-series predictive analytics solution for automatically detecting, labeling, and classifying flight anomolies. These activities are largely dependent upon infrastructure-building tasks T1; however, we have started work on Tasks T2.1a and T2.2a as discussed below.
+
+\begin{itemize}[leftmargin=0em]
+
+\item[] 
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.1:}
+Create flight anomaly taxonomy\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\sethlcolor{ylw}
+\large a.~\hl{Create an initial taxonomy of common sUAS anomalies}&05/21&10/21&Completed\\
+\large b.~{Extend the taxonomy with additional anomaly patterns}&&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.2:}
+Train and test predictive analytics and anomoly classifier\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\large a.~\hl{Proof-of-concept using LSTM with Ardupilot \& px4 logs}&05/21&10/21&Active\\
+\large b.~Train \& evaluate MSCRED using simulated data&&&Planned\\
+\large c.~Train \& evaluate MSCRED on physical data&&&Planned\\
+\large d.~Minimize the model for on-board deployment&&&Planned\\
+\large e.~Train classifier to generate human-understandable tags &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+\end{itemize}
+
+\newpage Specific activities related to anomaly detection and diagnostics performed during this period have focused on the following:
+\begin{itemize}
+    \item {\bf Taxonomy of known sUAS Anomalies: {\it [Task 2.1a]} } We have marked this task as closed based on the initial taxonomy of common sUAS anomalies i.e., mechanical errors, high vibration, compass interference, gps glitches, power issues, and loss of link. Our future work will start detecting additional less common anomalies under Task 2.1.b.  
+    \item {\bf Detecting anomalies in Attitudes using LSTM: {\it [Task 2.2a]} }
+    Currently we are focusing on detecting two of these anomalies for the paper targeted at the International Conference on Information Processing in Sensor Networks (IPSN) with a submission deadline of October 29th. 
+    
+    One of the key symptoms of mechanical errors is that actual roll, pitch and yaw deviates from the desired roll, pitch and yaw. The initial (baseline) model trained by Nafee using ATT parameters of Ardupilot logs analyzes differences between the desired and actual attitudes (roll, pitch and yaw), and determines if the deviation is anomalous. He has tuned the hyperparameters (i.e tweaking the model architecture, adding/changing regularizers, trying out different activation functions) of the model to achieve the two most optimized versions (so far) with least validation error. 
+    
+    Both models have been tested on 26 flight logs collected from the online Ardupilot discussion forum. Each log contains multiple data streams including DesiredRoll-Roll, DesiredPitch-pitch and DesiredYaw-Yaw, meaning that the test set had 26*3=78 time series data streams. Among these 78 test data streams, 28 had anomalies and 50 had no anomalies. The most optimized model detected anomalies in 25 out of the 28 anomalous data steams (\textit{True Positive}) while misclassifying only 3 non-anomalous streams.   It was able to correctly classify 48 out of 50 normal (non-anomalous) data streams(\textit{True Negatives}) while only misclassifying 2 of the normal logs as anomalous (\textit{False Positives}). Table \ref{tab:eval} shows the summarized results for two of the best performing models.
+    
+    Figure \ref{fig:des-act} shows the comparison between the actual and desired roll/pitch of a flight log and the detection of the best model on the divergence of actual ones from the desired ones. Figure \ref{fig:1} shows the Desired vs Actual Roll of a flight log. Figure \ref{fig:2} shows the model's anomaly detection on the corresponding divergence of the actual roll from the desired one in Figure \ref{fig:1}. Similarly, Figure \ref{fig:3} shows the Desired vs Actual Pitch of a flight log. And Figure \ref{fig:4} shows the model's anomaly detection on the corresponding divergence of the actual roll from the desired one in Figure \ref{fig:3}. 
+    
+    Figure \ref{fig:eval} shows a selection of other detection results of the most optimized model. Figure \ref{fig:tp} shows an instance where the model detected anomalies (marked with a red dot) in a log where a true anomaly exists. Figure \ref{fig:tn} shows another example where the log has no anomalies in ATT parameter and the model correctly accepted it as normal. Figure \ref{fig:fp} shows an example of a false positive detection where the roll and pitch were coherent but the model still detected many parts of it as anomalous. We plan to further improve our model to remove these false positive results. 
+\end{itemize}
+
+%testfig
+\begin{figure}[]
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width= 10cm]{figures/ATT.DesRoll.png}
+    \caption{Desired and actual Roll}
+    \label{fig:1}
+  \end{subfigure}%
+  \begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width= 8cm, height=4.5cm]{figures/ADPD-003__detection - roll.jpg}
+    \caption{Detection on the difference between desired and actual roll}
+    \label{fig:2}
+  \end{subfigure}
+  %\medskip
+  
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width=10cm]{figures/ATT.DesPitch.png}
+    \caption{Desired and actual Pitch}
+    \label{fig:3}
+  \end{subfigure}
+  \begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width= 8cm, height=4.5cm]{figures/ADPD-003__detection - pitch.jpg}
+    \caption{Detection on the difference between desired and actual Pitch}
+    \label{fig:4}
+  \end{subfigure}
+  
+
+  \caption{Detection of anomalies in the attitude (ATT) parameter of a test log}
+  \label{fig:des-act}
+\end{figure}
+%end testfig
+
+\begin{figure}
+     \centering
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=5.5cm, height=5.5cm]{figures/ADPD-013_old__detection.jpg}
+         \caption{Detected anomalies in a log where anomalies truly exist (\textit{True Positive}) }
+         \label{fig:tp}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=5.5cm, height=5.5cm]{figures/ADPD-006__detection.jpg}
+         \caption{An example of the model not detecting any problem in a normal log file (\textit{True Negative})}
+         \label{fig:tn}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=5.5cm, height=5.5cm]{figures/ADPD-013__detection.jpg}
+         \caption{An example when the model detected anomalies but there were none (\textit{False Positive})}
+         \label{fig:fp}
+     \end{subfigure}
+     \caption{Performance of the best model on some of the test set logs}
+     \label{fig:eval}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+{\bf Metric}&{\bf Top Performing} &{\bf 2nd Top Performing}\\ \hline
+Total Test Logs&78&78\\ \hline
+True Positives&25&25\\ \hline
+True Negatives&48&47\\ \hline
+False Positives&2&3\\ \hline
+False Negatives&3&3\\ \hline
+Precision&0.9259&0.8929\\ \hline
+Recall&0.8929&0.8929\\ \hline
+F1 Score&0.909&0.8929\\ \hline
+\end{tabular}
+\caption{Evaluation results of two most optimized LSTM models on ATT test set}
+    \label{tab:eval}
+\end{table}
+
+
+\subsection*{Next Steps: }
+Next month we plan to complete the work on training anomaly detectors for each of the 6 targeted anomaly types, start evaluating the stability and sensitivity of our model, and submit a paper to the International Conference on Information Processing in Sensor Networks (IPSN). 
+

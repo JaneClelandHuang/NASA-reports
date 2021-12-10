@@ -1,0 +1,41 @@
+\begin{table}[]
+\centering
+\small\addtolength{\tabcolsep}{-2.4pt}
+%\small\addtolength{\tabcolsep}{-1pt} %Add this back if we need it.
+\caption{\centering Performance of the models on test set using maximum errors on training data as thresholds}
+    \label{tab:eval}
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\hline
+
+&\multirow{2}{*}{\textbf{Metrics}}
+& \multicolumn{3}{c|}{\textbf{Vibration}}
+& \multicolumn{3}{c|}{\textbf{Attitude}}  
+& \textbf{Int} \\ \cline{3-9}
+
+&& \textbf{VibeX} &\textbf{VibeY}& \textbf{VibeZ} & \textbf{Roll} & \textbf{Pitch} & \textbf{Yaw} & \textbf{Mag} \\ \hline
+
+\multirow{4}{*}{\rotatebox{90}{\textbf{LSTM}}}
+&Precision&0.92&0.85&0.95&1.00&0.90&0.78&0.83\\ \cline{2-9}
+&Recall&0.76&0.89&0.86&0.88&0.64&0.64&1.00\\ \cline{2-9}
+&Accuracy&0.89&0.89&0.91&0.95&0.87&0.86&0.90\\ \cline{2-9}
+&F1&0.83&0.87&0.90&0.94&0.75&0.70&0.91\\ \cline{1-9}
+%&Avg time/log (sec)&N/A&0.941&2.272&1.064&1.711&&\\ \cline{1-9}
+
+
+\multirow{4}{*}{\rotatebox{90}{\textbf{ANN}}}
+&Precision&0.88&0.80&0.87&0.94&0.75&0.75&1.00\\ \cline{2-9}
+&Recall&0.82&0.84&0.91&1.00&0.85&0.56&0.60\\ \cline{2-9}
+&Accuracy&0.89&0.85&0.89&0.97&0.87&0.84&0.80\\ \cline{2-9}
+&F1&0.85&0.82&0.89&0.97&0.80&0.63&0.75\\ \cline{1-9}
+
+\multirow{4}{*}{\rotatebox{90}{\textbf{Rule}}}
+
+&Precision&1.00&1.00&1.00&n/a&n/a&n/a&n/a\\ \cline{2-9}
+&Recall&0.18&0.26&0.77&n/a&n/a&n/a&n/a\\ \cline{2-9}
+&Accuracy&0.70&0.70&0.90&n/a&n/a&n/a&n/a\\ \cline{2-9}
+&F1&0.30&0.42&0.87&n/a&n/a&n/a&n/a\\ \cline{1-9}
+
+
+\end{tabular}
+
+\end{table}

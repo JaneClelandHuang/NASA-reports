@@ -1,0 +1,49 @@
+\section{Detect and Diagnose Abnormal Flight Patterns:} 
+We have no changes to report in this part of the work in the last month.  This aspect will pick up again in January when we plan to apply multi-variate approaches to a more diverse set of anomalies.  Please note that Yihong Ma (who previously performed the Compass Interference analysis) will formally join the project on December 1st, and will help speed up our work in this area under the supervision of Nitesh Chawla.   
+\begin{itemize}[leftmargin=0em]
+
+\item[] 
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.1:}
+Create flight anomaly taxonomy\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\sethlcolor{ylw}
+\large a.~\hl{Create an initial taxonomy of common sUAS anomalies}&05/21&10/21&Completed\\
+\large b.~{Extend the taxonomy with additional anomaly patterns}&&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 2.2:}
+Train and test predictive analytics and anomoly classifier\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\sethlcolor{ylw}
+\large a.~\hl{Proof-of-concept using LSTM with Ardupilot \& px4 logs}&05/21&10/21&Active\\
+\large b.~Train \& evaluate MSCRED using simulated data&&&Planned\\
+\large c.~Train \& evaluate MSCRED on physical data&&&Planned\\
+\large d.~Minimize the model for on-board deployment&&&Planned\\
+\large e.~Train classifier to generate human-understandable tags &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}\vspace{-4pt}
+\end{itemize}
+\end{itemize}
+
+\subsection*{Next Steps: }
+As reported in last month's report, our next steps will focus on multivariate analysis. Whilst our previous work established a good baseline and served as a proof-of-concept that it is possible to detect emergent anomalous behavior, it has several shortcomings that we plan to address.  First, we trained individual autoencoders for each anomaly type; however, in reality, individual attributes serve as indicators across multiple types of failures. We therefore plan to look at multi-variate approaches that are capable of analysing multiple `symptoms' simultaneously and diagnosing diverse failures. This next step is a multi-month effort as it requires significant effort to build a far more extensive labeled dataset and also conduct extensive experiments. This part of the work will be primarily supervised by Dr. Chawla, with PhD students Yihong and Doheon (new student). The data collection will be a full-team effort.
+%\end{itemize}
+
+ 
+
+

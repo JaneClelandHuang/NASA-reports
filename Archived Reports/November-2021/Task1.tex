@@ -1,0 +1,74 @@
+\section{Data Collection and Annotation Infrastructure}
+Task T1 focuses on establishing infrastructure for the project. Two Notre Dame students continue to build the website and backend.
+
+\sethlcolor{col}
+
+\begin{itemize}[leftmargin=0em]
+
+\item[] 
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 1.1:}
+Develop data collection and annotation infrastructure.\vspace{-10pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-6pt}
+%\small
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+
+\large a.\hl{~Develop \& deploy website for collecting flight logs}.&06/21&11/21&Active\\
+\sethlcolor{col2}
+\large b.\hl{~Develop tools for visualizing \& analyzing flight anomalies}.&06/21&11/21&Active\\
+\sethlcolor{col}
+\large c.\hl{~Build collections of anomalous flight logs}&07/21&Continual&Active\\
+\large d.~Construct labeled dataset of flight log anomalies. &&&Planned\\
+\end{tabular}
+\end{table}\vspace{-8pt}
+
+\item{\bf Task 1.2:} Create infrastructure for working with simulated data. \vspace{-10pt}
+\normalsize
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+\normalsize
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\sethlcolor{col}
+\large a.~\hl{Establish environment for collecting simulated flight logs}&06/21&09/21&Active\\
+\large b.~Collect paired flight logs for simulated \& physical flights.&&&Planned\\
+\large c.~Establish test oracle \& statistically compare flight data.&&&Planned\\
+\large d.~Create cloud service for runtime off-board data analysis &&&Planned\\
+\end{tabular}
+\end{table}
+\end{itemize}
+\end{itemize}
+\vspace{-12pt}
+
+Specific activities related to data collection infrastructure that we have performed during this period have focused on the following:
+\begin{itemize}[leftmargin=*]
+    \item {\bf Backend Server for Data Collection} {\it  [Task T1.1a]: } Development is complete. Undergoing tests.
+    \item {\bf Front-end Data Collection and annotation website: } The previous front-end work was a summer project with two UG students. Our current student (Gaurav) is working on integration with the backend. 
+    \item {\bf Initial Data Collation} {\it  [Task 1.1b]: }
+    We increased the number of annotated flight logs, primarily by searching for and retrieving additional Ardupilot flight logs needed for the paper we submitted. (Please see metrics)
+\item{\bf Onboard Infrastructure} {\it [Task 1.2a]: } Work continues (this is an ongoing project). We have focused on integration issues for the large-scale simulation platform as there are challenges to address in the simulation platform which don't occur in the physical world.  We believe they are worth addressing, because we want to deploy a large scale simulation with hundreds of sUAS and both onboard analytics as well as offboard aggregated data analysis.  Experiments at this scale need to be in the simulated environment. The overall system architecture will provide the infrastructure we need in order to support the architectural aspects of this project.  \end{itemize}
+
+\subsection*{Summarized Metrics}
+We have replaced our previous tracking table to focus on tracking our new library of annotated logs. We expect numbers to increase rapidly after we deploy our annotation tool.  We have focused on three specific time-series associated with Attitude, Vibration, and Compass Interference.  For this time series, we created datasets from our own Ardupilot flight logs as well as flight logs posted on Ardupilot forums. 
+
+% \begin{table}[h!]
+%     \centering 
+%     \begin{tabular}{|l|l|c|c|c|} \hline
+%         &{\bf Metric} & {\bf PX4} & {\bf Ardupilot} & {\bf Other}  \\ \hline
+%         1.& Total No. of Physical Logs collected&77357&700&0\\ \hline
+%         2.& Total No. of Physical Logs collected with anomalies&tbd&$>$30&0\\ \hline 
+%         3.& Total No. of Physical Logs collected with annotated anomalies&0 &0&0\\ \hline  
+%         4.& Total No. of Simulated Logs collected&0&0&0\\ \hline
+%         5.& Total No. of Simulated Logs collected with anomalies&0 &0&0\\ \hline 
+%         6.& Total No. of Simulated Logs collected with anomalies labeled&0 &0&0\\ \hline  
+%     \end{tabular}
+%     \newline Note: Still analyzing all the data we imported as it lacks some meta-data.
+% \end{table}
+
+\input{tables/AnnotatedLogs}
+
+\subsection*{Next Steps: }
+Our website for annotating data is currently under test. A student is working on it and we expect to deploy it before the end of the semester. We are also starting to collect data logs for additional types of anomalies.
