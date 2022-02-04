@@ -1,0 +1,68 @@
+%\newpage
+\section{Fault detection and Feature Interactions in sUAS:} The aim of these tasks is to identify runaway emergent behaviors due to interactions between hardware, software and environmental conditions using feature-based modeling and testing and search-based exploration using simulation.  This month we have focused on getting our experimental infrastructure built to automatically modify, run and analyze flights using differing configuration settings. 
+
+\begin{itemize}[leftmargin=0em]
+\item[] 
+\begin{itemize}[leftmargin=*]
+% First subtask
+
+\vspace{-8pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ 
+\sethlcolor{ylw}
+\large a.~\hl{Build initial feature models} &06/21&10/21&Completed\\
+\large b.~\hl{Refine feature models} &10/22&01/22&Active\\
+\large c.~\hl{Create feature-based simulation environment} &08/21&12/21&Active\\
+\large d.~\hl{Create structured database for analysis of logs}  &10/21&12/21& Active\\
+\large e.~Semantic partitioning of feature space  &&&Planned\\
+\end{tabular}
+\end{table}\vspace{-8pt}
+% Second subtask
+\newpage
+\item \textbf{Task 3.1:}~Systematically search for interaction Faults using  generated feature models. \vspace{-8pt}%Characterize features leading to failures as classification trees and utilize evolutionary algorithms for deeper search.  Experiments will be run in simulators on our HCC clusters. %Deliverables include the CIT samples, simulation scripts, evolutionary algorithms, experimental data and tagged artifacts of search. 
+
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5pt}
+
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\normalsize
+\large a.~CIT integrated and initial experiments run  &&&Planned\\
+\large b.~Develop alternative CIT models \& use higher strength CIT  &&&Planned\\
+\large c.~Evolutionary algorithms and integration with Goal 2 &&&Planned\\
+\large d.~Self-adaptive algorithm integration with Goal 2 &&&Planned\\
+% Add more if you want
+\end{tabular}
+\end{table}%\vspace{-4pt}
+\end{itemize}
+\end{itemize}\vspace{-16pt}
+
+
+Specific activities and progress related to these tasks are:
+\begin{itemize}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=6.0in]{figures/architecture.jpg}
+\caption{(a) Simulation Architecture and (2) Running} \label{fig:architecture}
+\end{figure}
+
+\item Figure \ref{fig:architecture}(a) shows the architecture for our experimentation infrastructure. 
+For the core system we have built a docker container that runs the PX4 simulator (we use JMavsim right now but this can be modified) in headless mode. We have also included communication using Mavros. The last part is a set of hardware tests written in Python that was provided by the Notre Dame team. We can easily modify these, but have started with a test that flys in a box shape with 8 waypoints. The docker container is used as a black box. It simply runs the configuration (an external input to the container). The output is a ulog file.  Alex (our undergraduate student) has written a script to process the ulogs (\#2) to extract data including the set of graphs from the time series data. The last part of our infrastructure is our driver (\#3) program that (1) modifies parameters; (2) runs the simulation on the tests; and (3) processes the log. This will run a single configuration and can be utilized by the search/exploration algorithm. For each part of this architecture we are building modules that can be replaced if we want to extend our framework (e.g. we can potentially replace the docker with an ArduPilot simulation container later on without too much rework).  Figure \ref{fig:architecture}(b) shows the system running a single configuration (Figure \ref{fig:architecture} \#1). 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=4.5in]{figures/ulog-output.jpg}
+\caption{Output (graph and header) for two configuration runs} \label{fig:run-output}
+\end{figure}
+
+\end{itemize}
+\subsection*{Next Steps:}
+\begin{enumerate}
+\item We have spent some time this month identifying the best method to reliably modify configurations (via parameter files) to ensure that our experiments correctly reset and modify the parameters in our model. We need to finalize and test this approach. Salil and Urjoshi are working on this together. Salil is also working to complete the automation of a full run of an arbitrary configuration (\#3). We expect this to all be completed this month.  Last, Alex's script currently builds graphs for all of the time series data and collects some general information about the flight. In Figure \ref{fig:run-output}, we show two graphs (of the flight path) as well as the other information we extract.  We believe the path graph can be useful to measure deviation from the expected path. The graphs contain  separate lines with the \textit{expected path} and the \textit{estimated path}. We plan to separate these lines into separate graphs so that Urjoshi can use image processing software to calculate this deviation. We will use this along with the other data extracted as our initial measure of distance from a good/correct flight. 
+
+\item The ISU and ND teams are working on a joint paper for a January submission. We are modifying this infrastructure to drive the MAPE-K (Monitor-Analyze-Plan-Execute over  shared Knowledge) loop for self-adaptation as follows.  We will establish a test environment that includes (1) injecting flight errors into the simulator, (2) detecting errors, and (3) taking basic remedial actions.  Flight errors will be created in two ways -- first, using settings in the simulator which are designed to test for failure cases, and second, by forcing harmful configurations during flight (i.e, ISU team outputs).  We have an aggressive plan to submit a paper to SEAMS: Software Engineering for Adaptive and Self-Managing Systems Symposium with a January 20th submission deadline. SEAMS is a highly-focused, well-respected event with high relevance for our work.  As a contingency plan; if we are not able to complete experiments in time, we will target the March 10th deadline of the ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering (A* conference).  The SEAMS project will be a collaborative effort between Cleland-Huang/ND team and Cohen/ISU team.
+\end{enumerate}

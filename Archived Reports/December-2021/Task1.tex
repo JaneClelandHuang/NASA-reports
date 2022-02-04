@@ -1,0 +1,69 @@
+\section{Data Collection and Annotation Infrastructure}
+Task T1 focuses on establishing infrastructure for the project. For organizational purposes we have moved the ISU curation work into this section.  Also as stated in our 6 month review presentation we are making a few changes in the way we establish infrastructure.  From now on, the backend dataset for both px4 and ardupilot projects will be in the format presented by Urjoshi - referred to from now on as the \emph{Curated-px4} and \emph{Curated-ardupilot} datasets. In practice, this means that we will now connect all front-end tools (i.e., for annotation and flight log collection) to these curated datasets. This will require some rework, but will clearly be beneficial in the long-run (see Point $\#1$ in Section \ref{sec:response}).
+
+\sethlcolor{col}
+
+\begin{itemize}[leftmargin=0em]
+
+\item[] 
+
+\begin{itemize}[leftmargin=*]
+\item {\bf Task 1.1:}
+Develop data collection and annotation infrastructure.\vspace{-10pt}
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-6pt}
+%\small
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+
+\large a.\hl{~Develop \& deploy website for collecting flight logs}.&06/21&11/21&Active\\
+\sethlcolor{col2}
+\large b.\hl{~Develop tools for visualizing \& analyzing flight anomalies}.&06/21&11/21&Active\\
+\sethlcolor{col}
+\large c.\hl{~Build collections of anomalous flight logs}&07/21&Continual&Active\\
+\large d.~Construct labeled dataset of flight log anomalies. &&&Planned\\
+\end{tabular}
+\end{table}\vspace{-8pt}
+
+\item{\bf Task 1.2:} Create infrastructure for working with simulated data. \vspace{-10pt}
+\normalsize
+\begin{table}[h!]
+\addtolength{\tabcolsep}{-5.6pt}
+\normalsize
+\hspace*{.38cm}\begin{tabular}{L{11.1cm}L{1.5cm} L{2cm} L{1.4cm} }
+{\bf \scriptsize \sc Subtask}&{\bf \scriptsize \sc Started}&{\bf \scriptsize \sc Target}&{\bf \scriptsize \sc Status}\\ \hline
+\sethlcolor{col}
+\large a.~\hl{Establish environment for collecting simulated flight logs}&06/21&09/21&Active\\
+\large b.~Collect paired flight logs for simulated \& physical flights.&&&Planned\\
+\large c.~Establish test oracle \& statistically compare flight data.&&&Planned\\
+\large d.~Create cloud service for runtime off-board data analysis &&&Planned\\
+\end{tabular}
+\end{table}
+\end{itemize}
+\end{itemize}
+\vspace{-12pt}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=6.5in]{figures/database}
+\caption{Revised PX4 Database Schema and queries for initial (uncleaned) data} \label{fig:dbexample}
+\end{figure}
+Specific activities related to curated data and its infrastructure performed during this period have focused on the following:
+\begin{itemize}[leftmargin=*]
+    \item {\bf Backend Server for Data Collection} {\it  [Task T1.1a]: } We have recruited a new MS student, Pedro Alarcon Granadeno (ND), who will take our previous backend code and reconnect it to the new curated dataset SQL infrastructure.
+    \item {\bf Front-end Data Collection and annotation website: } {\it  [Task T1.1b]: } Pedro will also work with Gaurav (our current ND undergraduate), to integrate the front-end (written in Vue) with the new backend. 
+    \item {\bf Data Curated Datasets as relational models} {\it  [Task 1.1c]: } The datasets will include two distinct types of data -- both retrieved from flight logs.  These are (a) configuration data, and (b) time-series sensor data.  Urjoshi (ISU) has implemented an initial version of the PX4 database in SQLite database to hold the 53k PX4 records. An updated schema is shown in Figure \ref{fig:dbexample} on the left. We have populated this, but have some data cleaning still left to do.  Due to different software versions of PX4 for instance, not all configurations appear in all logs. We also are building tables to store the default configurations and individual time-series data. For now the database has a single parameter table, but we want to consider prior versions so we may add additional default tables. We plan to complete by the end of this month and share the full database with the Notre Dame team so we can start working on the annotation/curation of the data. The right side of Figure \ref{fig:dbexample} shows three queries using the current data.  Query \#1 shows a count and grouping of parameter values for the parameter \texttt{IMU\_GYRO\_RATEMAX}. Using this database we can join this table with the meta-data or time series tables and map configurations to poor performance.  Query \#2 performs the same query for \texttt{CBRK\_SUPPLY\_CHK}.  Query \#3 shows the default value (0.0). We investigated further and discovered that the default autoconfig script provided by PX4 overrides the default value and sets it to 894281 (a special value that turn the circuit breaker check off).  In discussions with the Notre Dame team we learned that \texttt{CBRK\_SUPPLY\_CHK} is a  configuration that is normally disarmed just before a physical flight begins, something that needs to be annotated in our feature model. Our ability to quickly identify this type of domain knowledge is one strength of having the database (and logs).   We plan to use further interaction with the database to help refine the feature model in collaboration with Notre Dame.  The last query (\#4) shows the first 15 records of meta-data where the rating is `crash\_hw\_sw'.  The description field from this table provides some context from the user. The Notre Dame team plans to use this for annotations and labelling. 
+    \item {\bf Ardupilot data} {\it  [Task 1.1c]: } As creating annotated, curated datasets is time-consuming and we wanted to simultaneously start work on the anomaly detection algorithms; all experiments conducted \emph{until now} have been on Ardupilot data collected directly from Notre Dame's own UAV logs. 
+    
+\item{\bf Onboard Infrastructure} {\it [Task 1.2a]: } While current experiments have all been conducted on stored flight logs, the next phase will focus on real-time analysis. We want to tackle this early so that we fully understand performance and timing constraints. Nafee's effort this month has focused on figuring out how to collect the data needed by the anomaly detection models in real-time. He has investigated px4's uORB publish-subscribe API, and learned how to subscribe to the needed data.  He is currently working on a component for collecting the raw data and performing math functions to replicate the variables stored in the data logs.  For the $Att$ attribute (yaw, pitch, roll) he subscribes to (a) the $vehicle\_attitude$ uORB topic and extracts the $actual~attitude$ in quaternions, and (b) the $vehicle\_attitude\_setpoint$ topic to  retrieve the $desired~attitudes$ as quaternions. He has written a function to extract the actual and desired roll, pitch and yaw from these two topics. For vibration, he subscribes to the $sensor\_accel$ topic and extracts the $Accelerometer$ data across x,y and z axes, which he converts to eulerian angles. As Nafee will be on vacation for the remainder of December, he has shared this with the ISU team so we can proceed with the planned SEAMS paper whilst he is away. Upon return, we will integrate a full LSTM or ANN model into the real-time loop.
+\end{itemize}
+
+%\subsection*{Summarized Metrics}
+%No change in annotated data since November's report.
+%\input{tables/AnnotatedLogs}
+
+\subsection*{Next Steps: Transition from small to large datasets }
+As mentioned above, all current experiments were conducted using our \emph{small} Ardupilot dataset. This was a deliberate and pragmatic decision that allowed us to create an initial proof-of-concept and submit an early paper. Time will tell whether the reviewers consider the data set too small or not. This approach had several major advantages, including the fact that the $test$ dataset was taken entirely from forum logs in which experts had discussed and diagnosed the anomalies.  We don't have this level of diagnosis for the larger dataset.
+
+However, the process for extending experiments to the larger datasets is therefore as follows: (1) ISU will complete construction of the curated px4 dataset, (2) ND will build additional functioning anomaly detectors for px4 and Ardupilot based on a small annotated dataset, (3) Once we achieve `decent' accuracy for each type of anomaly, we will use the trained models to detect anomalies in the larger dataset and automatically annotate them as $candidate$ anomalies, (4) Use our annotation tool to support human vetting of the candidate anomalies and mark them as correct or incorrect. For step $\#3$ we will have multiple trained evaluators look at each candidate anomaly.  As our current analysis is on Ardupilot logs, the next step (in January) is to conduct step $\#2$ for px4 logs -- again using flight logs discussed in the forums as the test set. Once we have affirmed and/or retrained the anomaly detector for px4 logs, we will commence with step $\#3$ in order to ultimately deliver a much larger dataset of annotated anomalies.  We address the precision problem through the human vetting process, and will (partially) address the recall problem through adding orthogonal threshold-based heuristic techniques with lower than normal thresholds, in order to mark a larger number of candidate anomalies for human inspection.  
+

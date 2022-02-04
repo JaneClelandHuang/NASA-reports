@@ -1,0 +1,57 @@
+\input{Current Report/format}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{makecell}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+\begin{document}
+\fontsize{12}{13}
+\selectfont
+
+\begin{center}
+\textbf{\Large{\bf Safe Deployment of Small Unmanned Aerial Systems\\}}
+\vspace{6pt}
+\textbf{\Large{\bf through On-Board Monitoring and Assessment}}\\ 
+\vspace{6pt}
+\textbf{NRA ROA –2019 NNH19ZEA001N-SWS\\
+B.5 System-Wide Safety (SWS) Project}\\ \vspace{6pt}
+\underline{\smash{\emph{Monthly Report: December 2021}}} \\ \vspace{6pt}
+PI: Jane Cleland-Huang, (JaneHuang@nd.edu)\\
+co-I: Myra Cohen, (mcohen@iastate.edu)\\
+co-I: Nitesh Chawla,(nchawla@nd.edu)\\
+\end{center}
+
+\section{General Overview}
+As reported in our last month's report, we recently submitted a paper to the International Conference on Information Processing in Sensor Networks (IPSN), entitled: {\bf Md.Nafee Al Islam, Yihong Ma, Nitesh Chawla, Jane Cleland-Huang, `Detecting and Diagnosing Anomalies in the Sensor Data of small Unmanned Aerial Systems'.} As a result, the past few weeks have marked a transition in which we have focused on conceptual planning of next steps for the failure analysis algorithms, and preliminary work for real-time onboard analytics. In addition, the ISU team has focused upon creating the curated px4 dataset and building their experimental infrastructure, whilst the ND team has continued efforts in developing the annotation website. 
+
+We first report on specific tasks, and then in Section \ref{sec:response} answer Steven Young's questions from our 6 Month review presentation.
+
+\input{Task1}
+\input{Task2}
+\input{Task3}
+
+
+
+\section{Other Goals}
+\label{sec:Goals}
+\noindent Work on other research goals is either not yet started or in very preliminary stages.  There are no changes in this work yet.
+\subsection{Safety Analysis and Assurance: }
+Our  goal  is  not  only  to  detect  anomalies,  but  also  to  diagnose  them,  gain  understanding of  their  underlying  causes,  and  ultimately  to  identify  mitigations.   We  plan to  adopt  a systematic  safety-analysis  and  assurance  approach  using  Fault  Tree  Analysis  (FTA)  and Safety-Assurance Cases (SAC). {\bf No progress was been made on this goal in August.}
+\subsection{ Architectural Analysis and Integration: }
+A key component of this research involves evaluating existing NAS and SWIM architecturesto determine how well they can support in-time assessment functions – such as our Dronolytics  solution.  We  will  design,  implement,  and  deploy  a  highly  modular,  scalable, low-power consumption prototype system with capabilities to interface with existing NAS infrastructures. 
+
+\input{Current Report/December-2021/Response}
+
+\section{Questions to NASA and other updates: }
+Could we skip the January report and merge our December/January activities and results into the early February report?  The reason for this request is that universities will close in two weeks, so we would only be reporting on two weeks worth of work.  Some of our students are also taking their annual vacation time before the holidays. We are happy to write a short report if required, but would prefer to focus our limited working time on the SEAMS paper due January 20th, and submit our next report by February 7th.  Please let us know.
+\end{document}
+
+
+
